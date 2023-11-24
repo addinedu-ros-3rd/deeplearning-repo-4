@@ -12,49 +12,6 @@ mp_pose = mp.solutions.pose
 attention_dot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 draw_line = [[0, 4], [0, 1], [4, 5], [1, 2], [5, 6], [2, 3], [6, 8], [3, 7], [9, 10]]
 
-# def show_skeleton(video_path , interval, attention_dot, draw_line):
-#     xy_list_list, xy_list_list_flip = [], []
-#     cv2.destroyAllWindows()
-#     pose = mp_pose.Pose(static_image_mode = True, model_complexity = 1, enable_segmentation = False, min_detection_confidence = 0.3)
-#     cap = cv2.VideoCapture(video_path)
-    
-#     if cap.isOpened():
-#         cnt = 0
-#         while True:
-#             ret, img = cap.read()
-#             if cnt == interval and ret == True:
-#                 cnt = 0
-#                 xy_list, xy_list_flip = [], []
-#                 img = cv2.resize(img, (640,  640))
-#                 results = pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-#                 if not results.pose_landmarks: continue
-#                 idx = 0
-#                 draw_line_dic = {}
-#                 for x_and_y in results.pose_landmarks.landmark:
-#                     if idx in attention_dot:
-#                         xy_list.append(x_and_y.x)
-#                         xy_list.append(x_and_y.y)
-#                         xy_list_flip.append(1 - x_and_y.x)
-#                         xy_list_flip.append(x_and_y.y)
-#                         x, y = int(x_and_y.x * 640), int(x_and_y.y * 640)
-#                         draw_line_dic[idx] = [x, y]
-#                     idx += 1
-#                 xy_list_list.append(xy_list)
-#                 xy_list_list_flip.append(xy_list_flip)
-#                 for line in draw_line:
-#                     x1, y1 = draw_line_dic[line[0]][0], draw_line_dic[line[0]][1]
-#                     x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
-#                     img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-#                 cv2.imshow('Landmark Image', img)
-#                 if cv2.waitKey(1) == ord('q'):
-#                     break
-#             elif ret == False: break
-#             cnt += 1
-#     cap.release()
-#     cv2.destroyAllWindows()
-    
-#     return xy_list_list + xy_list_list_flip
-
 
 class MyDataset(Dataset):
     def __init__(self, seq_list):
@@ -101,8 +58,8 @@ class skeleton_LSTM(nn.Module):
         return x
     
 ## load model
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model = torch.load("../model/aa.pt", map_location=device)
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+model = torch.load("../model/aa.pt")
 model.eval()
 
 interval = 1
@@ -154,7 +111,7 @@ if cap.isOpened():
                     dataset = DataLoader(dataset)
                     xy_list_list = []
                     for data, label in dataset:
-                        data = data.to(device)
+                        # data = data.to(device)
                         with torch.no_grad():
                             result = model(data)
                             _, out = torch.max(result, 1)

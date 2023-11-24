@@ -159,5 +159,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/data
-/model
+/datasets
+/tf_model
+/src/runs
+*.pt
