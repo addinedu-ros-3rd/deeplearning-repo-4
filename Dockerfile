@@ -13,7 +13,7 @@ ADD . /workspace/project/
 RUN apt update --no-install-recommends
 RUN apt upgrade --no-install-recommends -y
 RUN apt install -y sudo vim lsb-release libgl1-mesa-dev libglib2.0-0 qt5-default libxcb-xinerama0-dev
-RUN pip install ultralytics tensorflow opencv-python koreanize-matplotlib mediapipe
+RUN pip install ultralytics tensorflow opencv-python koreanize-matplotlib mediapipe transformers timm
 
 # reset environment default
 ENV DEBIAN_FRONTEND newt
