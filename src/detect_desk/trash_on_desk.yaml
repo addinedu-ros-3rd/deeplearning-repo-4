@@ -1,0 +1,8 @@
+path: ../../../datasets/trash_on_desk
+
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 4
+names: ['coffee_cup', 'paper', 'plastic', 'tissue']
