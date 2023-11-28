@@ -9,14 +9,13 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 import time
 import threading
-# import multiprocessing
 
 
 mp_pose = mp.solutions.pose
-mp_pose_pose = mp_pose.Pose(static_image_mode=True, model_complexity=1,
-                            enable_segmentation = False, min_detection_confidence=0.3)
+mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
+                            enable_segmentation = False, min_detection_confidence=0.7)
 xy_list_list = []
-cnt = 0
+
 attention_dot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 draw_line = [[0, 4], [0, 1], [4, 5], [1, 2], [5, 6], [2, 3], [6, 8], [3, 7], [9, 10]]
 
@@ -66,113 +65,90 @@ class skeleton_LSTM(nn.Module):
         return x
 
 class Pose_Estimation():
+
     def __init__(self):
 
-        '--------load_model--------'
-        # self.load_model()
-        self.thread = camThread()
-        '-----------camera-------------'
-        self.cam_thread = threading.Thread(target=self.thread.run)
-        self.cam_thread.start() # start Thread
-        '----------init_pose----------'
-      
+        self.camera = cv2.VideoCapture(0)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
 
-    def pose_estimation(self, img):
+    def pose_estimation(self):
 
         global xy_list_list
-        global cnt
 
-        cnt += 1
-        print(cnt)
-
-        results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-
-        length = 2
+        length = 20
         dataset = []
-        
         status = 'None'
 
-        if not results.pose_landmarks: 
-            pass
-        else:
-            xy_list = []
-            idx = 0
-            draw_line_dic = {}
-            
-            # print(len(results.pose_landmarks.landmark))
-            for x_and_y in results.pose_landmarks.landmark:
-                if idx in attention_dot:
-                    xy_list.append(x_and_y.x)
-                    xy_list.append(x_and_y.y)
-                    x, y = int(x_and_y.x * 640), int(x_and_y.y * 640)
-                    draw_line_dic[idx] = [x, y]
-                idx += 1
-            xy_list_list.append(xy_list)
-
-            for line in draw_line:
-                x1, y1 = draw_line_dic[line[0]][0], draw_line_dic[line[0]][1]
-                x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
-                img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-            
-            # print("aaaaaaaaaaaaa : ",len(xy_list_list))
-            if len(xy_list_list) == length:
-                
-                dataset = []
-                dataset.append({'key' : 0, 'value' : xy_list_list})
-                dataset = MyDataset(dataset)
-                dataset = DataLoader(dataset)
-                xy_list_list = []
-
-                for data, label in dataset:
-                    data = data.to("cuda")
-
-                    with torch.no_grad():
-                        result = self.model(data)
-                        _, out = torch.max(result, 1)
-
-                        if out.item() == 0: status = 'Phoneing'
-                        else: status = 'Working'
-
-            cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
-            cv2.imshow("pose_estimation", img)
-
-
-class camThread():  
-
-    def __init__(self):
-        self.running = True
-        self.camera = cv2.VideoCapture(0)
-    
-        self.model = torch.load("../model/detect_pose.pt", map_location="cuda")
-        print("success model load")
-        self.model.eval()  
-    
-    def run(self):
-
-        while self.running == True:
-            # print(self.camera.get(cv2.CAP_PROP_FPS))
-            
-            self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)
-
+        while True:
             ret, img = self.camera.read()
 
             if (ret):
                 img = cv2.resize(img, (640, 640))
-                Pose_Estimation.pose_estimation(self, img)
-                
-                if cv2.waitKey(1) == ord('q'):
-                    self.stop()
-            time.sleep(0.1)
-    
+        
+                results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
-    def stop(self):
-        self.running = False
+                if not results.pose_landmarks: 
+                    pass
+
+                else:
+                    xy_list = []
+                    idx = 0
+                    draw_line_dic = {}
+                    
+                    for x_and_y in results.pose_landmarks.landmark:
+                        if idx in attention_dot:
+                            xy_list.append(x_and_y.x)
+                            xy_list.append(x_and_y.y)
+                            x, y = int(x_and_y.x * 640), int(x_and_y.y * 640)
+                            draw_line_dic[idx] = [x, y]
+                        idx += 1
+                    xy_list_list.append(xy_list)
+
+                    for line in draw_line:
+                        x1, y1 = draw_line_dic[line[0]][0], draw_line_dic[line[0]][1]
+                        x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
+                        img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+                    
+                    if len(xy_list_list) == length:
+                        
+                        dataset = []
+                        dataset.append({'key' : 0, 'value' : xy_list_list})
+                        dataset = MyDataset(dataset)
+                        dataset = DataLoader(dataset)
+                        xy_list_list = []
+
+                        for data, label in dataset:
+                            data = data.to("cuda")
+                            
+                            with torch.no_grad():
+                                result = model(data)
+                                _, out = torch.max(result, 1)
+                                
+                                print(out.item())
+                                if out.item() == 0: 
+                                    status = 'phone'
+                                else: 
+                                    status = 'work'
+
+                    cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+                    cv2.imshow("pose_estimation", img)
+                    time.sleep(0.05)
+
+                    if cv2.waitKey(1) == ord('q'):
+                        break
         self.camera.release
         cv2.destroyAllWindows()
 
+
 if __name__ == "__main__":
-    Pose_Estimation()
+    model = torch.load("../model/detect_working.pt", map_location="cuda")
+    print("success model load")
+    model.eval()
+
+    pose_estimation = Pose_Estimation()
+    pose_estimation.pose_estimation()
+
 
 
 
