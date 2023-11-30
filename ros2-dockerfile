@@ -1,0 +1,19 @@
+FROM osrf/ros:galactic-desktop
+
+RUN echo "source /opt/ros/galactic/setup.bash; echo ROS environment sourced" >> /home/.bashrc
+
+# create user
+ARG USER_NAME=
+ARG USER_ID=
+ARG GROUP_ID=
+
+RUN groupadd ${USER_NAME} --gid ${GROUP_ID}\
+    && useradd -l -m ${USER_NAME} -u ${USER_ID} -g ${GROUP_ID} -s /bin/bash\
+    && passwd -d ${USER_NAME} \
+    && usermod -aG sudo $USER_NAME \
+    && usermod -aG video $USER_NAME
+
+# change user
+USER $USER_NAME
+
+ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
