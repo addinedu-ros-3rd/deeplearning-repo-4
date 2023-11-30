@@ -39,24 +39,3 @@ services:
 
     # keep alive
     restart: always
-
-  ros-container:
-    image: haejo-ros
-    container_name: haejo-ros
-    build:
-      context: .
-      dockerfile: ros2-dockerfile
-      args:
-        USER_NAME: appuser
-        USER_ID: 1000
-        GROUP_ID: 1000
-    network_mode: host
-    pid: host
-    ipc: host
-
-    # avoid exit
-    tty: true
-    stdin_open: true
-
-    # keep alive
-    restart: always
