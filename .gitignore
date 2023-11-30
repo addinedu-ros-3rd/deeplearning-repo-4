@@ -162,3 +162,4 @@ cython_debug/
 /datasets
 /src/detect_desk/runs
 *.pt
+config.ini
