@@ -40,7 +40,7 @@ class MyDataset(Dataset):
 class skeleton_LSTM(nn.Module):
     def __init__(self):
         super(skeleton_LSTM, self).__init__()
-        self.lstm1 = nn.LSTM(input_size= 22, hidden_size=128, num_layers=1, batch_first=True)
+        self.lstm1 = nn.LSTM(input_size= 26, hidden_size=128, num_layers=1, batch_first=True)
         self.lstm2 = nn.LSTM(input_size=128, hidden_size=256, num_layers=1, batch_first=True)
         self.lstm3 = nn.LSTM(input_size=256, hidden_size=512, num_layers=1, batch_first=True)
         self.dropout1 = nn.Dropout(0.1)
@@ -143,7 +143,7 @@ class Pose_Estimation():
 
 
 if __name__ == "__main__":
-    model = torch.load("../model/detect_working.pt", map_location="cuda")
+    model = torch.load("../model/add_yolo_box.pt", map_location="cuda")
     print("success model load")
     model.eval()
 
