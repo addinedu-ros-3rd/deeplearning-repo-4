@@ -163,3 +163,4 @@ cython_debug/
 /src/detect_desk/runs
 *.pt
 config.ini
+*.avi
