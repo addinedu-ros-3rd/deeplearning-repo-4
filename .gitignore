@@ -160,6 +160,7 @@ cython_debug/
 #.idea/
 
 /datasets
-/tf_model
-/src/runs
+/src/detect_desk/runs
 *.pt
+config.ini
+*.avi

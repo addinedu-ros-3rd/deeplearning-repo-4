@@ -1,7 +1,7 @@
 services:
   deeplearning:
-    image: deeplearning
-    container_name: deeplearning
+    image: haejo
+    container_name: haejo
     build:
       context: .
       args:
