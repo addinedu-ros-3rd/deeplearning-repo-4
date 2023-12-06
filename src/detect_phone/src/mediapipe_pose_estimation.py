@@ -1,4 +1,5 @@
 import cv2
+import time
 import torch.nn as nn
 import torch
 import mediapipe as mp
@@ -7,8 +8,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-import time
-import threading
+from ultralytics import YOLO
+from ultralytics.utils.plotting import Annotator
 
 
 mp_pose = mp.solutions.pose
@@ -40,7 +41,7 @@ class MyDataset(Dataset):
 class skeleton_LSTM(nn.Module):
     def __init__(self):
         super(skeleton_LSTM, self).__init__()
-        self.lstm1 = nn.LSTM(input_size= 22, hidden_size=128, num_layers=1, batch_first=True)
+        self.lstm1 = nn.LSTM(input_size= 26, hidden_size=128, num_layers=1, batch_first=True)
         self.lstm2 = nn.LSTM(input_size=128, hidden_size=256, num_layers=1, batch_first=True)
         self.lstm3 = nn.LSTM(input_size=256, hidden_size=512, num_layers=1, batch_first=True)
         self.dropout1 = nn.Dropout(0.1)
@@ -109,7 +110,38 @@ class Pose_Estimation():
                         x1, y1 = draw_line_dic[line[0]][0], draw_line_dic[line[0]][1]
                         x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
                         img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-                    
+    
+                    phone_results = yolo(img, stream=True)
+
+                    for r in phone_results:
+                        annotator = Annotator(img)
+                        
+                        boxes = r.boxes
+                        
+                        for idx, box in enumerate(boxes):
+                            b = box.xyxy[0]
+                            c = box.cls
+                        
+                            if int(c) == 67:
+                                
+                                color = colors[int(c)]
+                                annotator.box_label(b, yolo.names[int(c)], color)
+
+                                b_list = b.tolist()
+                                
+                                for idx in range(4):
+                                    xy_list.append(b_list[idx]/640.0)
+                                break
+                                
+                            else:
+                                if (len(boxes) - 1 == idx):
+                                    for idx in range(4):
+                                        xy_list.append(0.0)
+                                else:
+                                    continue
+                                    
+                    img = annotator.result()
+
                     if len(xy_list_list) == length:
                         
                         dataset = []
@@ -143,9 +175,13 @@ class Pose_Estimation():
 
 
 if __name__ == "__main__":
-    model = torch.load("../model/detect_working.pt", map_location="cuda")
+    model = torch.load("../model/add_yolo_box.pt", map_location="cuda")
     print("success model load")
     model.eval()
+    yolo = YOLO("yolov8n.pt")
+
+    labels = yolo.names
+    colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(labels))] 
 
     pose_estimation = Pose_Estimation()
     pose_estimation.pose_estimation()
