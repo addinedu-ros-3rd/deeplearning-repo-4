@@ -160,7 +160,15 @@ cython_debug/
 #.idea/
 
 /datasets
-/src/detect_desk/runs
 *.pt
 config.ini
 *.avi
+/src/yolov5
+
+/ros_cam/build
+/ros_cam/install
+/ros_cam/log
+
+/ros_dl/build
+/ros_dl/install
+/ros_dl/log

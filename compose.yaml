@@ -1,5 +1,5 @@
 services:
-  deeplearning:
+  haejo-dl:
     image: haejo
     container_name: haejo
     build:
@@ -9,16 +9,10 @@ services:
         USER_ID: 1000
         GROUP_ID: 1000
     volumes:
-      # code integration
-      - /home/yoh/deeplearning-repo-4:/workspace/project/
-      # using cam
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # using cam
+      - ~/deeplearning-repo-4:/workspace
     environment:
       - DISPLAY=unix$DISPLAY
-    # using cam
-    devices:
-      - /dev/video0:/dev/video0
+      - QT_X11_NO_MITSHM=1
     # getting all gpus
     privileged: true
     # communication between containers and host
@@ -36,6 +30,4 @@ services:
     # avoid exit
     tty: true
     stdin_open: true
-
-    # keep alive
     restart: always

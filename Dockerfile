@@ -5,21 +5,22 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | cat > /etc/apt/apt.conf.d/10no--check-valid-until
 
-ADD . /workspace/project/
+ADD . /workspace/
 
 # install python and pip libraries for deep learning
 RUN apt update --no-install-recommends \
     && apt upgrade --no-install-recommends -y \
-    && apt install -y sudo vim lsb-release libgl1-mesa-dev libglib2.0-0 qtbase5-dev qt5-qmake libxcb-xinerama0-dev python3.10 python3-pip git \
-    && pip install torch==2.1.0 torchvision==0.16.0 --index-url https://download.pytorch.org/whl/cu118 \
-    && pip --default-timeout=300 install ultralytics tensorflow opencv-python mediapipe mysql-connector-python \
-    # install ros2 humble
+    && apt install -y sudo vim lsb-release libgl1-mesa-dev libgl1-mesa-glx libglib2.0-0 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+        libxcb-xinerama0-dev python3.10 python3-pip \
+    && apt install -y make libgtk2.0-dev pkg-config g++ libxcb*-dev libfontconfig1-dev libxkbcommon-x11-dev libgtk-3-dev \
+    # install ros2 humble & install ros libs & build
     && apt install -y software-properties-common \
     && add-apt-repository universe \
     && apt update && sudo apt install curl -y \
     && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
-    && apt update && yes | apt install ros-humble-desktop
+    && apt update && yes | apt install ros-humble-desktop python3-colcon-common-extensions \
+    && echo 'export QT_QPA_PLATFROM="xcb"' > /etc/environment
 
 # reset environment default
 ENV DEBIAN_FRONTEND newt
@@ -37,3 +38,7 @@ RUN groupadd ${USER_NAME} --gid ${GROUP_ID}\
 
 # change user
 USER $USER_NAME
+
+WORKDIR /workspace
+
+RUN pip --default-timeout=300 install -r ./requirements.txt
