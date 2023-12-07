@@ -14,13 +14,14 @@ from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
+
 
 mp_pose = mp.solutions.pose
 mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
@@ -75,39 +76,38 @@ class skeleton_LSTM(nn.Module):
         x = self.fc(x[:, -1, :])
         return x
 
+
 class DetectPhone(Node):
     def __init__(self):
         super().__init__('phone_detect')
 
         self.mat = None
         self.sub = self.create_subscription(
-            Image,
-            '/image_raw',
+            CompressedImage,
+            '/image_raw/compressed',
             self.image_callback,
-            100)
+            10)
         self.sub
 
         self.bridge = CvBridge()
-        # self.yolo = YOLO("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolov8n.pt")
-        
-        # self.labels = self.yolo.names
-        # self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
-        
-        # self.model = skeleton_LSTM()
-        # self.model.load_state_dict(torch.load("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolo_state_dict.pt",
-        #                                        map_location="cuda"))
-        # self.model.eval()
-        # print("success model load")        
+
+        self.yolo = YOLO("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolov5su.pt")
+
+        self.labels = self.yolo.names
+        self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
+
+        self.model = skeleton_LSTM()
+        self.model.load_state_dict(torch.load("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolo_state_dict.pt",
+                                                map_location="cpu"))
+        self.model.eval()
+        print("success model load") 
+       
 
     def image_callback(self, msg):
-        sz = (msg.height, msg.width)
+        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
 
-        if msg.step * msg.height != len(msg.data):
-            print("bad step/height/data size")
-            return
-
-        self.cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        img, status = self.pose_estimation(self.cv_image)
+        print("img shape : ", cv_image.shape)
+        img, status = self.pose_estimation(cv_image)
         WindowClass().show_detect_phone(img, status)
     
 
@@ -120,11 +120,11 @@ class DetectPhone(Node):
         status = 'None'
         
         img = cv2.resize(img, (640, 640))
-    
-        results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
+        results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        
         if not results.pose_landmarks: 
-            pass
+            pass    
 
         else:
             xy_list = []
@@ -145,11 +145,13 @@ class DetectPhone(Node):
                 x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
                 img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
 
-            phone_results = yolo(img, stream=True)
+            
+            phone_results = self.yolo(img, stream=True)
 
             for r in phone_results:
-                annotator = Annotator(img)
                 
+                annotator = Annotator(img)
+
                 boxes = r.boxes
                 
                 for idx, box in enumerate(boxes):
@@ -158,8 +160,8 @@ class DetectPhone(Node):
                 
                     if int(c) == 67:
                         
-                        color = colors[int(c)]
-                        annotator.box_label(b, yolo.names[int(c)], color)
+                        color = self.colors[int(c)]
+                        annotator.box_label(b, self.yolo.names[int(c)], color)
 
                         b_list = b.tolist()
                         
@@ -169,7 +171,7 @@ class DetectPhone(Node):
                         
                     else:
                         if (len(boxes) - 1 == idx):
-                            for idx in range(4):
+                            for _ in range(4):
                                 xy_list.append(0.0)
                         else:
                             continue
@@ -188,8 +190,8 @@ class DetectPhone(Node):
                     data = data.to("cuda")
                     
                     with torch.no_grad():
-                        model = model.to("cuda")
-                        result = model(data)
+                        self.model = self.model.to("cuda")
+                        result = self.model(data)
                         _, out = torch.max(result, 1)
                         
                         print(out.item())
@@ -214,18 +216,6 @@ class WindowClass(QMainWindow, from_class):
 
         '-----------camera-------------'
         self.detect_phone.clicked.connect(self.click_detect_phone)
-        # self.cam_thread.update.connect(self.updateCamera)
-
-        # '-----------record-------------'
-        # self.recordbtn.clicked.connect(self.clickRecord)
-        # self.record.update.connect(self.updateRecord)
-
-        # '-----------capture------------'
-        # self.capturebtn.clicked.connect(self.capture)
-
-        # '-----------video---------'
-        # self.vid.update.connect(self.updateVideo)
-        # self.video_stopbtn.clicked.connect(self.clickVideo)
 
 
     def click_detect_phone(self):
@@ -255,7 +245,9 @@ class WindowClass(QMainWindow, from_class):
 
         cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
         cv2.imshow("detect_img", img)
-        cv2.waitKey(1)
+
+        if cv2.waitKey(1) == ord('q'):
+            cv2.destroyAllWindows()
     
             
 def spin_phone_node(args=None):
@@ -279,16 +271,6 @@ def main(args=None):
 
 
 if __name__ == '__main__':
-    yolo = YOLO("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolov8n.pt")
-    
-    labels = yolo.names
-    colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
-    
-    model = skeleton_LSTM()
-    model.load_state_dict(torch.load("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolo_state_dict.pt",
-                                            map_location="cuda"))
-    model.eval()
-    print("success model load") 
 
     main()
     
