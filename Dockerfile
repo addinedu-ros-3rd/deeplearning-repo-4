@@ -7,12 +7,12 @@ RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";"
 
 ADD . /workspace/
 
-# install python and pip libraries for deep learning
+# install python and pip libraries for deep learning, opencv, qt
 RUN apt update --no-install-recommends \
     && apt upgrade --no-install-recommends -y \
-    && apt install -y sudo vim lsb-release libgl1-mesa-dev libgl1-mesa-glx libglib2.0-0 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
-        libxcb-xinerama0-dev python3.10 python3-pip \
-    && apt install -y make libgtk2.0-dev pkg-config g++ libxcb*-dev libfontconfig1-dev libxkbcommon-x11-dev libgtk-3-dev \
+    && apt install -y sudo vim \
+        python3.10 python3-pip \
+        lsb-release libgl1-mesa-dev libglib2.0-0 qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libxcb-* \ 
     # install ros2 humble & install ros libs & build
     && apt install -y software-properties-common \
     && add-apt-repository universe \

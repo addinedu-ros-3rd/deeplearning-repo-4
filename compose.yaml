@@ -12,7 +12,10 @@ services:
       - ~/deeplearning-repo-4:/workspace
     environment:
       - DISPLAY=unix$DISPLAY
-      - QT_X11_NO_MITSHM=1
+      - ENV QT_DEBUG_PLUGINS=1
+      - ENV QT_QPA_PLATFORM=xcb
+      - ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/Qt/${QT_VERSION}/gcc_64/plugins
+      - ENV QT_PLUGIN_PATH=/opt/Qt/${QT_VERSION}/gcc_64/plugins
     # getting all gpus
     privileged: true
     # communication between containers and host
