@@ -110,6 +110,10 @@ class DetectPhone(Node):
         cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
         print("img shape : ", cv_image.shape)
         
+        cv_image = cv2.merge((cv_image, cv_image, cv_image))
+        
+        print("img shape after cvtColor : ", cv_image.shape)
+        
         img, status = self.pose_estimation(cv_image)
         WindowClass().show_detect_phone(img, status)
     

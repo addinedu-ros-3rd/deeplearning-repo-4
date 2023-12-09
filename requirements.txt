@@ -4,7 +4,9 @@ torch==2.1.0+cu118
 torchvision==0.16.0+cu118
 ultralytics==8.0.219
 tensorflow
-opencv-contrib-python==4.6.0.66
-opencv-python==4.8.1.78
+opencv-contrib-python==4.8.0.74
+opencv-python==4.8.0.74
 mediapipe==0.10.8
 mysql-connector-python
+PyQt5==5.15.3
+PyQt5-sip==12.13.0

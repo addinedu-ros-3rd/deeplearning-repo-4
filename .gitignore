@@ -159,11 +159,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/datasets
 *.pt
 config.ini
 *.avi
 /src/yolov5
+/src/detect_desk/datasets
 
 /ros_cam/build
 /ros_cam/install
