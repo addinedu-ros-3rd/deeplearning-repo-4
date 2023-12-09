@@ -14,7 +14,7 @@ from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator
 from rclpy.node import Node
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 
 from PyQt5.QtWidgets import *
@@ -88,7 +88,7 @@ class DetectPhone(Node):
             CompressedImage,
             '/image_raw/compressed',
             self.image_callback,
-            100)
+            10)
         self.sub
 
         self.bridge = CvBridge()
@@ -99,7 +99,7 @@ class DetectPhone(Node):
         
         self.model = skeleton_LSTM()
         self.model.load_state_dict(torch.load("/workspace/ros_dl/src/haejo_pkg/model/yolo_state_dict.pt",
-                                               map_location="cuda"))
+                                               map_location="cpu"))
         self.model.eval()
         print("success model load")        
 
@@ -107,14 +107,10 @@ class DetectPhone(Node):
     def image_callback(self, msg):
         print('image_callback called')
         
-        sz = (msg.height, msg.width)
-
-        if msg.step * msg.height != len(msg.data):
-            print("bad step/height/data size")
-            return
-
-        self.cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        img, status = self.pose_estimation(self.cv_image)
+        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        print("img shape : ", cv_image.shape)
+        
+        img, status = self.pose_estimation(cv_image)
         WindowClass().show_detect_phone(img, status)
     
 
@@ -176,7 +172,7 @@ class DetectPhone(Node):
                         
                     else:
                         if (len(boxes) - 1 == idx):
-                            for idx in range(4):
+                            for _ in range(4):
                                 xy_list.append(0.0)
                         else:
                             continue
@@ -195,8 +191,8 @@ class DetectPhone(Node):
                     data = data.to("cuda")
                     
                     with torch.no_grad():
-                        model = model.to("cuda")
-                        result = model(data)
+                        self.model = self.model.to("cuda")
+                        result = self.model(data)
                         _, out = torch.max(result, 1)
                         
                         print(out.item())
@@ -221,18 +217,6 @@ class WindowClass(QMainWindow, from_class):
 
         '-----------camera-------------'
         self.detect_phone.clicked.connect(self.click_detect_phone)
-        # self.cam_thread.update.connect(self.updateCamera)
-
-        # '-----------record-------------'
-        # self.recordbtn.clicked.connect(self.clickRecord)
-        # self.record.update.connect(self.updateRecord)
-
-        # '-----------capture------------'
-        # self.capturebtn.clicked.connect(self.capture)
-
-        # '-----------video---------'
-        # self.vid.update.connect(self.updateVideo)
-        # self.video_stopbtn.clicked.connect(self.clickVideo)
 
 
     def click_detect_phone(self):
@@ -262,7 +246,9 @@ class WindowClass(QMainWindow, from_class):
 
         cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
         cv2.imshow("detect_img", img)
-        cv2.waitKey(1)
+        
+        if cv2.waitKey(1) == ord('q'):
+            cv2.destroyAllWindows()
     
             
 def spin_phone_node(args=None):
