@@ -1,12 +1,18 @@
+from . import Logger
+from collections.abc import Iterable
+
 import mysql.connector
 import configparser
-import Logger
+import os
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(os.path.join(os.getcwd(), './utils/config.ini'))
+
+# print("cwd", os.getcwd())
+
 dev = config['dev']
 
-log = Logger()
+log = Logger.Logger('haejo_DB.log')
 
 class DB():
     
@@ -75,3 +81,35 @@ class DB():
 
         finally:
             self.disconnect()
+            
+    
+    def callProc(self, proc_name, params):
+        try:
+            self.checkIfConnected()
+            log.info((proc_name, params))
+            self.cursor.callproc(proc_name, params)
+            self.conn.commit()
+
+        except Exception as e:
+            log.error(f" DB callProc : {e}")
+
+        finally:
+            self.disconnect()
+            
+            
+    def callProcReturn(self, proc_name, params):
+        try:
+            self.checkIfConnected()
+            log.info((proc_name, params))
+            self.cursor.callproc(proc_name, params)
+            self.conn.commit()
+
+            for result in self.cursor.stored_results():
+                    result = result.fetchone()[0]
+
+        except Exception as e:
+            log.error(f" DB callProc : {e}")
+
+        finally:
+            self.disconnect()
+            return result

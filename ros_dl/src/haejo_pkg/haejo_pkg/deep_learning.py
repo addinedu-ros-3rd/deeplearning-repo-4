@@ -24,6 +24,7 @@ from PyQt5.QtCore import *
 
 import os
 import configparser
+import data_manager
 
 config = configparser.ConfigParser()
 config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/util/config.ini')
