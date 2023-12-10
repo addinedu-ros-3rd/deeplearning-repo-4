@@ -164,7 +164,6 @@ config.ini
 *.avi
 /train/yolov5
 /train/detect_desk/datasets
-/train/detect_phone
 
 /ros_cam/build
 /ros_cam/install
