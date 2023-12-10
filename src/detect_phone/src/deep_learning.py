@@ -81,14 +81,6 @@ class DetectPhone(Node):
     def __init__(self):
         super().__init__('phone_detect')
 
-        self.mat = None
-        self.sub = self.create_subscription(
-            CompressedImage,
-            '/image_raw/compressed',
-            self.image_callback,
-            10)
-        self.sub
-
         self.bridge = CvBridge()
 
         self.yolo = YOLO("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolov5su.pt")
@@ -105,12 +97,15 @@ class DetectPhone(Node):
 
     def image_callback(self, msg):
         cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
-
-        print("img shape : ", cv_image.shape)
+        
         img, status = self.pose_estimation(cv_image)
-        WindowClass().show_detect_phone(img, status)
-    
+        cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+        cv2.imshow("detect_img", img)
 
+        if cv2.waitKey(1) == ord('q'):
+            cv2.destroyAllWindows()
+        
+    
     def pose_estimation(self, img):
         
         global xy_list_list
@@ -211,8 +206,21 @@ class WindowClass(QMainWindow, from_class):
         self.setupUi(self)
         
         self.isDetectPhoneOn = False
+        self.detectphone = DetectPhone()
+
+        self.sub = self.detectphone.create_subscription(
+        CompressedImage,
+        '/image_raw/compressed',
+        self.detectphone.image_callback,
+        10)
+        self.sub
 
         self.pixmap = QPixmap()
+
+        self.timer = QTimer(self)
+        
+        self.timer.timeout.connect(self.spin_node)
+        self.timer.start(100)
 
         '-----------camera-------------'
         self.detect_phone.clicked.connect(self.click_detect_phone)
@@ -227,7 +235,6 @@ class WindowClass(QMainWindow, from_class):
             self.detect_desk.hide()
             self.detect_snack.hide()
 
-            spin_phone_node()
 
         else:
             self.detect_phone.setText('detect_phone')
@@ -238,35 +245,29 @@ class WindowClass(QMainWindow, from_class):
             self.detect_snack.show()
 
             cv2.destroyAllWindows()
-            print("aaaaaaaaaaaaaaa")
-            
-    
-    def show_detect_phone(self, img, status):
-
-        cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
-        cv2.imshow("detect_img", img)
-
-        if cv2.waitKey(1) == ord('q'):
-            cv2.destroyAllWindows()
-    
-            
-def spin_phone_node(args=None):
-    rclpy.init(args=args)
-    detect_phone = DetectPhone()
-
-    try:
-        rclpy.spin(detect_phone)
         
-    except KeyboardInterrupt:
-        detect_phone.destroy_node()
-        rclpy.shutdown()
+
+    def spin_node(self):
+        if self.isDetectPhoneOn == True:
+
+            rclpy.spin_once(self.detectphone)
+        else:
+            print("not detect mode")
+    
+
+    def shutdown_ros(self):
+        print("shutting down ROS")
+        self.detectphone.destroy_node()
+        rclpy.shutdown()  
 
 
 def main(args=None):
+    rclpy.init(args=None)
 
     app = QApplication(sys.argv)
     myWindow = WindowClass()
     myWindow.show()
+    app.aboutToQuit.connect(myWindow.shutdown_ros)
     sys.exit(app.exec_())
 
 
