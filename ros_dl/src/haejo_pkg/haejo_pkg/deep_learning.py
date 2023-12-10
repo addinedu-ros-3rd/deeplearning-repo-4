@@ -23,6 +23,11 @@ from PyQt5 import uic
 from PyQt5.QtCore import *
 
 import os
+import configparser
+
+config = configparser.ConfigParser()
+config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/util/config.ini')
+dev = config['dev']
 
 os.environ.pop("QT_QPA_PLATFORM_PLUGIN_PATH")
 
@@ -33,7 +38,7 @@ xy_list_list = []
 
 attention_dot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 draw_line = [[0, 4], [0, 1], [4, 5], [1, 2], [5, 6], [2, 3], [6, 8], [3, 7], [9, 10]]
-from_class = uic.loadUiType("/workspace/ros_dl/src/haejo_pkg/haejo_pkg/haejo.ui")[0]
+from_class = uic.loadUiType(dev['GUI'])[0]
 
 class MyDataset(Dataset):
     def __init__(self, seq_list):
@@ -92,14 +97,13 @@ class DetectPhone(Node):
         self.sub
 
         self.bridge = CvBridge()
-        self.yolo = YOLO("/workspace/ros_dl/src/haejo_pkg/model/yolov8n.pt")
+        self.yolo = YOLO(dev['detect_phone_yolo_model'])
         
         self.labels = self.yolo.names
         self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
         
         self.model = skeleton_LSTM()
-        self.model.load_state_dict(torch.load("/workspace/ros_dl/src/haejo_pkg/model/yolo_state_dict.pt",
-                                               map_location="cpu"))
+        self.model.load_state_dict(torch.load(dev['detect_phone_lstm_model'], map_location="cpu"))
         self.model.eval()
         print("success model load")        
 
