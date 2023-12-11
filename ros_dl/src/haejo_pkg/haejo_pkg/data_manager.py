@@ -1,4 +1,4 @@
-from utils import DB, Logger
+from .utils import DB, Logger
 
 db = DB.DB()
 log = Logger.Logger('haejo_data_manager.log')
@@ -24,5 +24,5 @@ def insert_res(req_id, result, file_path):
         
 if __name__ == '__main__':
     log.info('data_manager ok')
-    # insert_req('detect_desk')
-    # insert_res(1, 'vinyl', 'python_test')
+    req_id = insert_req('detect_desk')
+    insert_res(req_id, 'vinyl', 'python_test')

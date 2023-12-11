@@ -1,14 +1,13 @@
 from . import Logger
-from collections.abc import Iterable
 
 import mysql.connector
 import configparser
 import os
 
 config = configparser.ConfigParser()
-config.read(os.path.join(os.getcwd(), './utils/config.ini'))
+config.read(os.path.join(os.getcwd(), 'src/haejo_pkg/haejo_pkg/utils/config.ini'))
 
-# print("cwd", os.getcwd())
+print("cwd", os.getcwd())
 
 dev = config['dev']
 
@@ -55,9 +54,6 @@ class DB():
         except Exception as e:
             log.error(f" DB execute : {e}")
 
-        finally:
-            self.disconnect()
-
 
     def fetchOne(self):
         try:
@@ -67,9 +63,6 @@ class DB():
         except Exception as e:
             log.error(f" DB fetchOne : {e}")
 
-        finally:
-            self.disconnect()
-
 
     def fetchAll(self):
         try:
@@ -78,9 +71,6 @@ class DB():
 
         except Exception as e:
             log.error(f" DB fetchAll : {e}")
-
-        finally:
-            self.disconnect()
             
     
     def callProc(self, proc_name, params):
@@ -92,9 +82,6 @@ class DB():
 
         except Exception as e:
             log.error(f" DB callProc : {e}")
-
-        finally:
-            self.disconnect()
             
             
     def callProcReturn(self, proc_name, params):
@@ -110,6 +97,4 @@ class DB():
         except Exception as e:
             log.error(f" DB callProc : {e}")
 
-        finally:
-            self.disconnect()
-            return result
+        return result

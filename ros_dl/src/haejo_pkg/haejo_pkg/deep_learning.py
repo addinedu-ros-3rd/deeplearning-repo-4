@@ -22,15 +22,20 @@ from PyQt5.QtGui import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
 
-import os
+from . import data_manager
+
 import configparser
-import data_manager
+import os
+
+from haejo_pkg.yolov5 import detect
+from PIL import Image
+
 
 config = configparser.ConfigParser()
-config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/util/config.ini')
+config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
 dev = config['dev']
 
-os.environ.pop("QT_QPA_PLATFORM_PLUGIN_PATH")
+from_class = uic.loadUiType(dev['GUI'])[0]
 
 mp_pose = mp.solutions.pose
 mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
@@ -39,7 +44,7 @@ xy_list_list = []
 
 attention_dot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 draw_line = [[0, 4], [0, 1], [4, 5], [1, 2], [5, 6], [2, 3], [6, 8], [3, 7], [9, 10]]
-from_class = uic.loadUiType(dev['GUI'])[0]
+
 
 class MyDataset(Dataset):
     def __init__(self, seq_list):
@@ -85,44 +90,24 @@ class skeleton_LSTM(nn.Module):
         x = self.fc(x[:, -1, :])
         return x
 
+
 class DetectPhone(Node):
     def __init__(self):
         super().__init__('phone_detect')
 
-        self.mat = None
-        self.sub = self.create_subscription(
-            CompressedImage,
-            '/image_raw/compressed',
-            self.image_callback,
-            10)
-        self.sub
-
         self.bridge = CvBridge()
-        self.yolo = YOLO(dev['detect_phone_yolo_model'])
-        
+
+        self.yolo = YOLO(dev['phone_yolo_model'])
+
         self.labels = self.yolo.names
         self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
-        
+
         self.model = skeleton_LSTM()
-        self.model.load_state_dict(torch.load(dev['detect_phone_lstm_model'], map_location="cpu"))
+        self.model.load_state_dict(torch.load(dev['phone_lstm_model'], map_location="cpu"))
         self.model.eval()
-        print("success model load")        
+        print("success model load") 
 
-
-    def image_callback(self, msg):
-        print('image_callback called')
-        
-        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
-        print("img shape : ", cv_image.shape)
-        
-        cv_image = cv2.merge((cv_image, cv_image, cv_image))
-        
-        print("img shape after cvtColor : ", cv_image.shape)
-        
-        img, status = self.pose_estimation(cv_image)
-        WindowClass().show_detect_phone(img, status)
     
-
     def pose_estimation(self, img):
         
         global xy_list_list
@@ -132,11 +117,11 @@ class DetectPhone(Node):
         status = 'None'
         
         img = cv2.resize(img, (640, 640))
-    
-        results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
+        results = mp_pose_pose.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        
         if not results.pose_landmarks: 
-            pass
+            pass    
 
         else:
             xy_list = []
@@ -157,11 +142,13 @@ class DetectPhone(Node):
                 x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
                 img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
 
+            
             phone_results = self.yolo(img, stream=True)
 
             for r in phone_results:
-                annotator = Annotator(img)
                 
+                annotator = Annotator(img)
+
                 boxes = r.boxes
                 
                 for idx, box in enumerate(boxes):
@@ -212,7 +199,20 @@ class DetectPhone(Node):
                             status = 'work'
 
         return img, status
-            
+    
+
+class DetectDesk(Node):
+    def __init__(self):
+        super().__init__('desk_detect')
+        self.bridge = CvBridge()
+        
+    def detect_desk(self, img):
+        img = cv2.resize(img, (640, 640))
+        img = Image.fromarray(img)
+        img.save("./temp.jpg")
+        img = detect.run(weights=dev['desk_yolo_model'], source="./temp.jpg")
+        
+        return img
 
 class WindowClass(QMainWindow, from_class):
 
@@ -220,12 +220,54 @@ class WindowClass(QMainWindow, from_class):
         super().__init__()
         self.setupUi(self)
         
+        self.bridge = CvBridge()
+
         self.isDetectPhoneOn = False
+        self.detectphone = DetectPhone()
+        
+        self.isDetectDeskOn = False
+        self.detectdesk = DetectDesk()
+        
+        self.detectphone.create_subscription(
+        CompressedImage,
+        '/image_raw/compressed',
+        self.image_callback,
+        1)
+        
+        self.detectdesk.create_subscription(
+        CompressedImage,
+        '/image_raw/compressed',
+        self.image_callback,
+        1)
 
         self.pixmap = QPixmap()
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.spin_node)
+        self.timer.start(100)
 
         '-----------camera-------------'
         self.detect_phone.clicked.connect(self.click_detect_phone)
+        self.detect_desk.clicked.connect(self.click_detect_desk)
+
+
+    def image_callback(self, msg):
+        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        
+        if self.isDetectPhoneOn == True:
+            img, status = self.detectphone.pose_estimation(cv_image)
+            cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+            
+        elif self.isDetectDeskOn == True:
+            img = self.detectdesk.detect_desk(cv_image)
+        
+        h,w,c = img.shape
+        qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
+
+        self.pixmap = self.pixmap.fromImage(qimage)
+        self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
+
+        self.label.setPixmap(self.pixmap)
 
 
     def click_detect_phone(self):
@@ -236,8 +278,9 @@ class WindowClass(QMainWindow, from_class):
             self.detect_door.hide()
             self.detect_desk.hide()
             self.detect_snack.hide()
+            
+            req_id = data_manager.insert_req('detect_phone')
 
-            spin_phone_node()
 
         else:
             self.detect_phone.setText('detect_phone')
@@ -247,36 +290,55 @@ class WindowClass(QMainWindow, from_class):
             self.detect_desk.show()
             self.detect_snack.show()
 
-            cv2.destroyAllWindows()
-            print("aaaaaaaaaaaaaaa")
-            
-    
-    def show_detect_phone(self, img, status):
-
-        cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
-        cv2.imshow("detect_img", img)
+            # data_manager.insert_res(req_id, result, file_path)
         
-        if cv2.waitKey(1) == ord('q'):
-            cv2.destroyAllWindows()
-    
-            
-def spin_phone_node(args=None):
-    rclpy.init(args=args)
-    detect_phone = DetectPhone()
-
-    try:
-        rclpy.spin(detect_phone)
         
-    except KeyboardInterrupt:
-        detect_phone.destroy_node()
-        rclpy.shutdown()
+    def click_detect_desk(self):
+        if self.isDetectDeskOn == False:
+            self.detect_desk.setText('stop')
+            self.isDetectDeskOn = True
+            self.detect_light.hide()
+            self.detect_door.hide()
+            self.detect_snack.hide()
+            self.detect_phone.hide()
+            
+            req_id = data_manager.insert_req('detect_desk')
+
+        else:
+            self.detect_desk.setText('detect_desk')
+            self.isDetectDeskOn = False
+            self.detect_light.show()
+            self.detect_door.show()
+            self.detect_desk.show()
+            self.detect_phone.show()
+            
+            # video_path = os.path.join(os.getcwd(), save_path)
+            # print('video_path', video_path)
+            # data_manager.insert_res(req_id, 'result_test', video_path)
+
+
+    def spin_node(self):
+        if self.isDetectPhoneOn == True:
+            rclpy.spin_once(self.detectphone)
+        elif self.isDetectDeskOn == True:
+            rclpy.spin_once(self.detectdesk)
+        # else:
+            # print("not detect mode")
+    
+
+    def shutdown_ros(self):
+        print("shutting down ROS")
+        self.detectphone.destroy_node()
+        rclpy.shutdown()  
 
 
 def main(args=None):
+    rclpy.init(args=None)
 
     app = QApplication(sys.argv)
     myWindow = WindowClass()
     myWindow.show()
+    app.aboutToQuit.connect(myWindow.shutdown_ros)
     sys.exit(app.exec_())
 
 
