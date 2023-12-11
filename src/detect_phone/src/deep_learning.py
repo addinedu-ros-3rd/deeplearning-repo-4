@@ -93,18 +93,7 @@ class DetectPhone(Node):
                                                 map_location="cpu"))
         self.model.eval()
         print("success model load") 
-       
 
-    def image_callback(self, msg):
-        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
-        
-        img, status = self.pose_estimation(cv_image)
-        cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
-        cv2.imshow("detect_img", img)
-
-        if cv2.waitKey(1) == ord('q'):
-            cv2.destroyAllWindows()
-        
     
     def pose_estimation(self, img):
         
@@ -205,25 +194,46 @@ class WindowClass(QMainWindow, from_class):
         super().__init__()
         self.setupUi(self)
         
+        self.bridge = CvBridge()
+
         self.isDetectPhoneOn = False
         self.detectphone = DetectPhone()
 
         self.sub = self.detectphone.create_subscription(
         CompressedImage,
         '/image_raw/compressed',
-        self.detectphone.image_callback,
-        10)
+        self.image_callback,
+        1)
         self.sub
 
         self.pixmap = QPixmap()
-
-        self.timer = QTimer(self)
         
+        self.timer = QTimer(self)
         self.timer.timeout.connect(self.spin_node)
         self.timer.start(100)
 
         '-----------camera-------------'
         self.detect_phone.clicked.connect(self.click_detect_phone)
+
+
+    def image_callback(self, msg):
+        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        
+        img, status = self.detectphone.pose_estimation(cv_image)
+        cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+        
+        h,w,c = img.shape
+        qimage = QImage(img.data, w, h, w*3, QImage.Format_RGB888)
+
+        self.pixmap = self.pixmap.fromImage(qimage)
+        self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
+
+        self.label.setPixmap(self.pixmap)
+        
+        # cv2.imshow("detect_img", img)
+
+        # if cv2.waitKey(1) == ord('q'):
+        #     cv2.destroyAllWindows()
 
 
     def click_detect_phone(self):
@@ -276,5 +286,4 @@ if __name__ == '__main__':
     main()
     
     
-
 

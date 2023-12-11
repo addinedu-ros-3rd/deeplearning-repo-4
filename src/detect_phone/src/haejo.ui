@@ -26,19 +26,6 @@
     <string>detect_snack</string>
    </property>
   </widget>
-  <widget class="QLabel" name="screen">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>180</y>
-     <width>771</width>
-     <height>461</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="detect_desk">
    <property name="geometry">
     <rect>
@@ -89,6 +76,19 @@
    </property>
    <property name="text">
     <string>detect_phone</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>140</y>
+     <width>791</width>
+     <height>491</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>
