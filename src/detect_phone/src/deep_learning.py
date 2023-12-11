@@ -207,7 +207,7 @@ class WindowClass(QMainWindow, from_class):
         self.sub
 
         self.pixmap = QPixmap()
-        
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.spin_node)
         self.timer.start(100)
@@ -223,18 +223,14 @@ class WindowClass(QMainWindow, from_class):
         cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
         
         h,w,c = img.shape
-        qimage = QImage(img.data, w, h, w*3, QImage.Format_RGB888)
+        print("c : ", c)
+        qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
 
         self.pixmap = self.pixmap.fromImage(qimage)
         self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
 
         self.label.setPixmap(self.pixmap)
         
-        # cv2.imshow("detect_img", img)
-
-        # if cv2.waitKey(1) == ord('q'):
-        #     cv2.destroyAllWindows()
-
 
     def click_detect_phone(self):
         if self.isDetectPhoneOn == False:
@@ -253,8 +249,6 @@ class WindowClass(QMainWindow, from_class):
             self.detect_door.show()
             self.detect_desk.show()
             self.detect_snack.show()
-
-            cv2.destroyAllWindows()
         
 
     def spin_node(self):
