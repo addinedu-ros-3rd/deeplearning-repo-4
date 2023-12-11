@@ -27,8 +27,9 @@ from . import data_manager
 import configparser
 import os
 
-from haejo_pkg.yolov5 import detect
+from haejo_pkg.yolov5 import detect, simple_detect
 from PIL import Image
+from datetime import datetime as dt
 
 
 config = configparser.ConfigParser()
@@ -207,10 +208,12 @@ class DetectDesk(Node):
         self.bridge = CvBridge()
         
     def detect_desk(self, img):
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (640, 640))
         img = Image.fromarray(img)
         img.save("./temp.jpg")
         img = detect.run(weights=dev['desk_yolo_model'], source="./temp.jpg")
+        # img = simple_detect.run(dev['desk_yolo_model'], img)
         
         return img
 
@@ -260,6 +263,7 @@ class WindowClass(QMainWindow, from_class):
             
         elif self.isDetectDeskOn == True:
             img = self.detectdesk.detect_desk(cv_image)
+            self.writer.write(img)
         
         h,w,c = img.shape
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
@@ -303,6 +307,11 @@ class WindowClass(QMainWindow, from_class):
             self.detect_phone.hide()
             
             req_id = data_manager.insert_req('detect_desk')
+            
+            now = dt.now().strftime("%Y%m%d_%H%M")
+            self.video_path = dev['video_dir'] + now + ".avi"
+            self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
+            self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
 
         else:
             self.detect_desk.setText('detect_desk')
@@ -312,9 +321,9 @@ class WindowClass(QMainWindow, from_class):
             self.detect_desk.show()
             self.detect_phone.show()
             
-            # video_path = os.path.join(os.getcwd(), save_path)
-            # print('video_path', video_path)
-            # data_manager.insert_res(req_id, 'result_test', video_path)
+            self.writer.release()
+            print('video_path', self.video_path)
+            data_manager.insert_res(req_id, 'result_test', self.video_path)
 
 
     def spin_node(self):

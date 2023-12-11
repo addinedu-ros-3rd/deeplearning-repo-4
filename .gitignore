@@ -173,3 +173,5 @@ config.ini
 /ros_dl/build
 /ros_dl/install
 /ros_dl/log
+
+/ros_dl/temp.jpg
