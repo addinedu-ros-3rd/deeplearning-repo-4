@@ -22,13 +22,13 @@ from PyQt5.QtCore import *
 from . import data_manager
 from datetime import datetime as dt
 from haejo_pkg.utils import Logger
-from haejo_pkg.module import DetectDesk
+from haejo_pkg.modules import DetectDesk
 
 log = Logger.Logger('haejo_deep_learning.log')
 
 config = configparser.ConfigParser()
 config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-dev = config['dev']
+dev = config['dev'] 
 
 from_class = uic.loadUiType(dev['GUI'])[0]
 
@@ -229,8 +229,8 @@ class WindowClass(QMainWindow, from_class):
             self.timer.start(100)
 
             '-----------camera-------------'
-            self.detect_phone.clicked.connect(self.click_detect_phone)
-            self.detect_desk.clicked.connect(self.click_detect_desk)
+            self.fx_button_phone.clicked.connect(self.click_detect_phone)
+            self.fx_button_desk.clicked.connect(self.click_detect_desk)
         
         except Exception as e:
             log.error(f" deep_learning WindowClass __init__ : {e}")
@@ -248,7 +248,7 @@ class WindowClass(QMainWindow, from_class):
             self.desk_result += result
             self.writer.write(img)
         
-        log.info(img.shape)
+        log.debug(img.shape)
         
         h, w, c = img.shape
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
@@ -256,50 +256,50 @@ class WindowClass(QMainWindow, from_class):
         self.pixmap = self.pixmap.fromImage(qimage)
         self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
 
-        self.label.setPixmap(self.pixmap)
+        self.video.setPixmap(self.pixmap)
 
 
     def click_detect_phone(self):
         if self.isDetectPhoneOn == False:
-            self.detect_phone.setText('stop')
+            self.fx_button_phone.setText('STOP')
             self.isDetectPhoneOn = True
-            self.detect_light.hide()
-            self.detect_door.hide()
-            self.detect_desk.hide()
-            self.detect_snack.hide()
+            self.fx_button_light.hide()
+            self.fx_button_door.hide()
+            self.fx_button_desk.hide()
+            self.fx_button_snack.hide()
             
-            self.start_rec_and_req('detect_phone')
+            self.start_rec_and_req('PHONE')
 
 
         else:
-            self.detect_phone.setText('detect_phone')
+            self.fx_button_phone.setText('PHONE')
             self.isDetectPhoneOn = False
-            self.detect_light.show()
-            self.detect_door.show()
-            self.detect_desk.show()
-            self.detect_snack.show()
+            self.fx_button_light.show()
+            self.fx_button_door.show()
+            self.fx_button_desk.show()
+            self.fx_button_snack.show()
 
             self.stop_rec_and_res()
         
         
     def click_detect_desk(self):
         if self.isDetectDeskOn == False:
-            self.detect_desk.setText('stop')
+            self.fx_button_desk.setText('STOP')
             self.isDetectDeskOn = True
-            self.detect_light.hide()
-            self.detect_door.hide()
-            self.detect_snack.hide()
-            self.detect_phone.hide()
+            self.fx_button_light.hide()
+            self.fx_button_door.hide()
+            self.fx_button_snack.hide()
+            self.fx_button_phone.hide()
             
-            self.start_rec_and_req('detect_desk')
+            self.start_rec_and_req('DESK')
 
         else:
-            self.detect_desk.setText('detect_desk')
+            self.fx_button_desk.setText('DESK')
             self.isDetectDeskOn = False
-            self.detect_light.show()
-            self.detect_door.show()
-            self.detect_snack.show()
-            self.detect_phone.show()
+            self.fx_button_light.show()
+            self.fx_button_door.show()
+            self.fx_button_snack.show()
+            self.fx_button_phone.show()
             
             self.stop_rec_and_res(self.desk_result)
             
@@ -310,14 +310,14 @@ class WindowClass(QMainWindow, from_class):
         now = dt.now().strftime("%Y%m%d_%H%M")
         self.video_path = dev['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 30.0, (640, 640))
         
         self.desk_result = ""
         
         
     def stop_rec_and_res(self, result):
         self.pixmap = QPixmap()
-        self.label.setPixmap(self.pixmap)
+        self.video.setPixmap(self.pixmap)
         
         try:
             self.writer.release()

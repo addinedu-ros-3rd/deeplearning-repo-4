@@ -8,8 +8,6 @@ services:
         USER_NAME: appuser
         USER_ID: 1000
         GROUP_ID: 1000
-    volumes:
-      - ~/deeplearning-repo-4:/workspace
     environment:
       - DISPLAY=unix$DISPLAY
       - QT_DEBUG_PLUGINS=1

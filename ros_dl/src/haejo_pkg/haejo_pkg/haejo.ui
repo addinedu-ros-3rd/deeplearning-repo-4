@@ -6,91 +6,332 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1060</width>
-    <height>715</height>
+    <width>962</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="detect_snack">
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QPushButton" name="tap_button_live">
    <property name="geometry">
     <rect>
-     <x>730</x>
+     <x>180</x>
      <y>60</y>
-     <width>151</width>
-     <height>61</height>
+     <width>89</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>detect_snack</string>
+    <string>LIVE</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="detect_desk">
+  <widget class="QPushButton" name="tap_button_load">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>290</x>
      <y>60</y>
-     <width>151</width>
-     <height>61</height>
+     <width>89</width>
+     <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>detect_desk</string>
+    <string>LOAD</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="detect_door">
+  <widget class="QLabel" name="video">
    <property name="geometry">
     <rect>
-     <x>410</x>
-     <y>60</y>
-     <width>151</width>
-     <height>61</height>
+     <x>40</x>
+     <y>110</y>
+     <width>480</width>
+     <height>320</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(222, 221, 218);</string>
+   </property>
    <property name="text">
-    <string>detect_door</string>
+    <string>480 x 320</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="detect_light">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>60</y>
-     <width>151</width>
-     <height>61</height>
+     <x>30</x>
+     <y>460</y>
+     <width>411</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>function list</string>
+   </property>
+   <widget class="QPushButton" name="fx_button_phone">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PHONE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fx_button_door">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>30</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DOOR</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fx_button_light">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>30</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LIGHT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fx_button_snack">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>30</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SNACK</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fx_button_desk">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>30</y>
+      <width>71</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DESK</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QTableWidget" name="db_tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>170</y>
+     <width>351</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>REQ_AT</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>RES_AT</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>MODULE</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>RESULT</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QLabel" name="db_label_code">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>50</y>
+     <width>67</width>
+     <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>detect_light</string>
+    <string>  C O D E</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="detect_phone">
+  <widget class="QLabel" name="db_label_day">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>60</y>
-     <width>151</width>
+     <x>740</x>
+     <y>50</y>
+     <width>67</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>  D   A   Y</string>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="db_date_before">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>90</y>
+     <width>110</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="maximumDateTime">
+    <datetime>
+     <hour>23</hour>
+     <minute>59</minute>
+     <second>59</second>
+     <year>2025</year>
+     <month>12</month>
+     <day>31</day>
+    </datetime>
+   </property>
+   <property name="minimumDateTime">
+    <datetime>
+     <hour>0</hour>
+     <minute>0</minute>
+     <second>0</second>
+     <year>2023</year>
+     <month>12</month>
+     <day>2</day>
+    </datetime>
+   </property>
+   <property name="displayFormat">
+    <string>yyyy-MM-dd</string>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="db_comboBox">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>90</y>
+     <width>111</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="db_date_after">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>120</y>
+     <width>110</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="maximumDateTime">
+    <datetime>
+     <hour>23</hour>
+     <minute>59</minute>
+     <second>59</second>
+     <year>2025</year>
+     <month>12</month>
+     <day>31</day>
+    </datetime>
+   </property>
+   <property name="minimumDateTime">
+    <datetime>
+     <hour>0</hour>
+     <minute>0</minute>
+     <second>0</second>
+     <year>2023</year>
+     <month>12</month>
+     <day>2</day>
+    </datetime>
+   </property>
+   <property name="displayFormat">
+    <string>yyyy-MM-dd</string>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="db_button_search">
+   <property name="geometry">
+    <rect>
+     <x>840</x>
+     <y>90</y>
+     <width>91</width>
      <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>detect_phone</string>
+    <string>SEARCH</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>140</y>
-     <width>791</width>
-     <height>491</height>
+     <x>560</x>
+     <y>40</y>
+     <width>391</width>
+     <height>521</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string/>
    </property>
   </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>531</width>
+     <height>521</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>label_2</zorder>
+  <zorder>label</zorder>
+  <zorder>tap_button_live</zorder>
+  <zorder>tap_button_load</zorder>
+  <zorder>video</zorder>
+  <zorder>groupBox</zorder>
+  <zorder>db_tableWidget</zorder>
+  <zorder>db_label_code</zorder>
+  <zorder>db_label_day</zorder>
+  <zorder>db_date_before</zorder>
+  <zorder>db_comboBox</zorder>
+  <zorder>db_date_after</zorder>
+  <zorder>db_button_search</zorder>
  </widget>
  <resources/>
  <connections/>
