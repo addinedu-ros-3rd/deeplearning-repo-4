@@ -25,12 +25,12 @@ from PyQt5.QtCore import *
 from . import data_manager
 
 import configparser
-import os
 
-from haejo_pkg.yolov5 import detect
-from PIL import Image
 from datetime import datetime as dt
+from haejo_pkg.utils import Logger
+from haejo_pkg.module import DetectDesk
 
+log = Logger.Logger('haejo_deep_learning.log')
 
 config = configparser.ConfigParser()
 config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
@@ -200,57 +200,46 @@ class DetectPhone(Node):
                             status = 'work'
 
         return img, status
-    
-
-class DetectDesk(Node):
-    def __init__(self):
-        super().__init__('desk_detect')
-        self.bridge = CvBridge()
-        
-    def detect_desk(self, img):
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (640, 640))
-        img = Image.fromarray(img)
-        img.save("./temp.jpg")
-        img = detect.run(weights=dev['desk_yolo_model'], source="./temp.jpg")
-        
-        return img
 
 class WindowClass(QMainWindow, from_class):
 
     def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        
-        self.bridge = CvBridge()
+        try:
+            super().__init__()
+            self.setupUi(self)
+            
+            self.bridge = CvBridge()
 
-        self.isDetectPhoneOn = False
-        self.detectphone = DetectPhone()
-        
-        self.isDetectDeskOn = False
-        self.detectdesk = DetectDesk()
-        
-        self.detectphone.create_subscription(
-        CompressedImage,
-        '/image_raw/compressed',
-        self.image_callback,
-        1)
-        
-        self.detectdesk.create_subscription(
-        CompressedImage,
-        '/image_raw/compressed',
-        self.image_callback,
-        1)
+            self.isDetectPhoneOn = False
+            self.detectphone = DetectPhone()
+            
+            self.isDetectDeskOn = False
+            self.detectdesk = DetectDesk.DetectDesk()
+            
+            self.detectphone.create_subscription(
+            CompressedImage,
+            '/image_raw/compressed',
+            self.image_callback,
+            1)
 
-        self.pixmap = QPixmap()
-        
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.spin_node)
-        self.timer.start(100)
+            self.detectdesk.create_subscription(
+            CompressedImage,
+            '/image_raw/compressed',
+            self.image_callback,
+            1)
 
-        '-----------camera-------------'
-        self.detect_phone.clicked.connect(self.click_detect_phone)
-        self.detect_desk.clicked.connect(self.click_detect_desk)
+            self.pixmap = QPixmap()
+            
+            self.timer = QTimer(self)
+            self.timer.timeout.connect(self.spin_node)
+            self.timer.start(100)
+
+            '-----------camera-------------'
+            self.detect_phone.clicked.connect(self.click_detect_phone)
+            self.detect_desk.clicked.connect(self.click_detect_desk)
+        
+        except Exception as e:
+            log.error(f" deep_learning WindowClass __init__ : {e}")
 
 
     def image_callback(self, msg):
@@ -261,10 +250,11 @@ class WindowClass(QMainWindow, from_class):
             cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
             
         elif self.isDetectDeskOn == True:
-            img = self.detectdesk.detect_desk(cv_image)
+            img, result = self.detectdesk.detect_desk(cv_image)
+            self.desk_result += result
             self.writer.write(img)
         
-        h,w,c = img.shape
+        h, w, c = img.shape
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
 
         self.pixmap = self.pixmap.fromImage(qimage)
@@ -315,7 +305,7 @@ class WindowClass(QMainWindow, from_class):
             self.detect_snack.show()
             self.detect_phone.show()
             
-            self.stop_rec_and_res()
+            self.stop_rec_and_res(self.desk_result)
             
             
     def start_rec_and_req(self, module):
@@ -326,10 +316,15 @@ class WindowClass(QMainWindow, from_class):
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
         self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
         
+        self.desk_result = ""
         
-    def stop_rec_and_res(self):
-        self.writer.release()
-        data_manager.insert_res(self.req_id, 'result_test', self.video_path)
+        
+    def stop_rec_and_res(self, result):
+        try:
+            self.writer.release()
+            data_manager.insert_res(self.req_id, result, self.video_path)
+        except Exception as e:
+            log.error(f" deep_learning stop_rec_and_res : {e}")
             
 
     def spin_node(self):
