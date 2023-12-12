@@ -9,7 +9,7 @@ config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/
 
 print("cwd", os.getcwd())
 
-dev = config['dev']
+dev = config['yun']
 
 log = Logger.Logger('haejo_DB.log')
 

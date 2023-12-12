@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator
 from rclpy.node import Node
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 
 from PyQt5.QtWidgets import *
@@ -28,7 +28,7 @@ log = Logger.Logger('haejo_deep_learning.log')
 
 config = configparser.ConfigParser()
 config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-dev = config['dev'] 
+dev = config['yun']
 
 from_class = uic.loadUiType(dev['GUI'])[0]
 
@@ -210,14 +210,14 @@ class WindowClass(QMainWindow, from_class):
         self.detectdesk = DetectDesk.DetectDesk()
         
         self.detectphone.create_subscription(
-        CompressedImage,
-        '/image_raw/compressed',
+        Image,
+        '/image_raw',
         self.image_callback,
         1)
 
         self.detectdesk.create_subscription(
-        CompressedImage,
-        '/image_raw/compressed',
+        Image,
+        '/image_raw',
         self.image_callback,
         1)
 
@@ -226,12 +226,15 @@ class WindowClass(QMainWindow, from_class):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.spin_node)
         self.timer.start(100)
-        
-        self.set_combo()
 
         '-----------camera-------------'
         self.fx_button_phone.clicked.connect(self.click_detect_phone)
         self.fx_button_desk.clicked.connect(self.click_detect_desk)
+        
+        '-------------DB---------------'
+        self.set_combo()
+        self.db_button_search.clicked.connect(self.search)
+        
         
         
     def set_combo(self):
@@ -239,6 +242,26 @@ class WindowClass(QMainWindow, from_class):
         self.db_comboBox.addItem("ALL")
         for item in moduleList:
             self.db_comboBox.addItem(item[0])
+            
+            
+    def search(self):
+        self.db_tableWidget.setRowCount(0)
+        
+        start_date = self.db_date_from.date().toString("yyyy-MM-dd")
+        end_date = self.db_date_to.date().toString("yyyy-MM-dd")
+        
+        result = data_manager.select_video(start_date, end_date)
+        
+        for row in result:
+            resultRow = self.db_tableWidget.rowCount()
+            self.db_tableWidget.insertRow(resultRow)
+            for i, v in enumerate(row):
+                self.db_tableWidget.setItem(resultRow, i, QTableWidgetItem(str(v)))
+                
+        header = self.db_tableWidget.horizontalHeader()
+        
+        for col in range(self.db_tableWidget.columnCount()):
+            header.setSectionResizeMode(col, QHeaderView.ResizeToContents)
         
 
     def image_callback(self, msg):

@@ -11,7 +11,7 @@ log = Logger.Logger('haejo_deep_learning.log')
 
 config = configparser.ConfigParser()
 config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-dev = config['dev']
+dev = config['yun']
 
 
 class DetectDesk(Node):
