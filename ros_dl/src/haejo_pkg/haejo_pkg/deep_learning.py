@@ -27,7 +27,7 @@ from . import data_manager
 import configparser
 import os
 
-from haejo_pkg.yolov5 import detect, simple_detect
+from haejo_pkg.yolov5 import detect
 from PIL import Image
 from datetime import datetime as dt
 
@@ -213,7 +213,6 @@ class DetectDesk(Node):
         img = Image.fromarray(img)
         img.save("./temp.jpg")
         img = detect.run(weights=dev['desk_yolo_model'], source="./temp.jpg")
-        # img = simple_detect.run(dev['desk_yolo_model'], img)
         
         return img
 
@@ -283,7 +282,7 @@ class WindowClass(QMainWindow, from_class):
             self.detect_desk.hide()
             self.detect_snack.hide()
             
-            req_id = data_manager.insert_req('detect_phone')
+            self.start_rec_and_req('detect_phone')
 
 
         else:
@@ -294,7 +293,7 @@ class WindowClass(QMainWindow, from_class):
             self.detect_desk.show()
             self.detect_snack.show()
 
-            # data_manager.insert_res(req_id, result, file_path)
+            self.stop_rec_and_res()
         
         
     def click_detect_desk(self):
@@ -306,25 +305,32 @@ class WindowClass(QMainWindow, from_class):
             self.detect_snack.hide()
             self.detect_phone.hide()
             
-            req_id = data_manager.insert_req('detect_desk')
-            
-            now = dt.now().strftime("%Y%m%d_%H%M")
-            self.video_path = dev['video_dir'] + now + ".avi"
-            self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-            self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
+            self.start_rec_and_req('detect_desk')
 
         else:
             self.detect_desk.setText('detect_desk')
             self.isDetectDeskOn = False
             self.detect_light.show()
             self.detect_door.show()
-            self.detect_desk.show()
+            self.detect_snack.show()
             self.detect_phone.show()
             
-            self.writer.release()
-            print('video_path', self.video_path)
-            data_manager.insert_res(req_id, 'result_test', self.video_path)
-
+            self.stop_rec_and_res()
+            
+            
+    def start_rec_and_req(self, module):
+        self.req_id = data_manager.insert_req(module)
+            
+        now = dt.now().strftime("%Y%m%d_%H%M")
+        self.video_path = dev['video_dir'] + now + ".avi"
+        self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
+        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
+        
+        
+    def stop_rec_and_res(self):
+        self.writer.release()
+        data_manager.insert_res(self.req_id, 'result_test', self.video_path)
+            
 
     def spin_node(self):
         if self.isDetectPhoneOn == True:
