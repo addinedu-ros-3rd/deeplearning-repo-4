@@ -22,6 +22,18 @@ def insert_res(req_id, result, file_path):
         log.error(f" data_manager insert_res : {e}")
         
         
+def select_module():
+    try:
+        sql = "SELECT name FROM module order by id"
+        db.execute(sql)
+        moduleList = db.fetchAll()
+        
+        return moduleList
+        
+    except Exception as e:
+        log.error(f" data_manager select_module : {e}")
+        
+        
 if __name__ == '__main__':
     log.info('data_manager ok')
     req_id = insert_req('detect_desk')

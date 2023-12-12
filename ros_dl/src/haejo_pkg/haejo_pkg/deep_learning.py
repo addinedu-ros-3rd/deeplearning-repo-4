@@ -235,8 +235,11 @@ class WindowClass(QMainWindow, from_class):
         
         
     def set_combo(self):
-        self.sql = "select "
-
+        moduleList = data_manager.select_module()
+        self.db_comboBox.addItem("ALL")
+        for item in moduleList:
+            self.db_comboBox.addItem(item[0])
+        
 
     def image_callback(self, msg):
         cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
@@ -250,7 +253,7 @@ class WindowClass(QMainWindow, from_class):
             self.desk_result += result
             self.writer.write(img)
         
-        log.debug(img.shape)
+        log.info(img.shape)
         
         h, w, c = img.shape
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
