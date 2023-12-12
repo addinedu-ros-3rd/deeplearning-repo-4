@@ -234,6 +234,7 @@ class WindowClass(QMainWindow, from_class):
         '-------------DB---------------'
         self.set_combo()
         self.db_button_search.clicked.connect(self.search)
+        self.db_tableWidget.itemDoubleClicked.connect(self.selectVideo)
         
         
         
@@ -247,10 +248,11 @@ class WindowClass(QMainWindow, from_class):
     def search(self):
         self.db_tableWidget.setRowCount(0)
         
+        module = self.db_comboBox.currentText()
         start_date = self.db_date_from.date().toString("yyyy-MM-dd")
         end_date = self.db_date_to.date().toString("yyyy-MM-dd")
         
-        result = data_manager.select_video(start_date, end_date)
+        result = data_manager.select_video(module, start_date, end_date)
         
         for row in result:
             resultRow = self.db_tableWidget.rowCount()
@@ -262,10 +264,35 @@ class WindowClass(QMainWindow, from_class):
         
         for col in range(self.db_tableWidget.columnCount()):
             header.setSectionResizeMode(col, QHeaderView.ResizeToContents)
+            
+            
+    def selectVideo(self, clickedItem):
+        idx = self.db_tableWidget.model().index(clickedItem.row(), 4)
+        file = self.db_tableWidget.model().data(idx)
+        self.videoCapture = cv2.VideoCapture(file)
+        
+        if self.videoCapture.isOpened():  # VideoCapture 인스턴스 생성 확인
+            self.showThumbnail()
+            
+            
+    def showThumbnail(self):
+        ret, frame = self.videoCapture.read()
+        
+        if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            h, w, c = frame.shape
+            bytes_per_line = 3 * w
+            self.qimage = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+
+            self.pixmap = QPixmap.fromImage(self.qimage)
+            self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
+            
+            self.video.setPixmap(self.pixmap)
         
 
     def image_callback(self, msg):
-        cv_image = self.bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         
         if self.isDetectPhoneOn == True:
             img, status = self.detectphone.pose_estimation(cv_image)
@@ -307,7 +334,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
 
-            self.stop_rec_and_res()
+            self.stop_rec_and_res("WORK")  # to do: 인식 결과 받도록 수정
         
         
     def click_detect_desk(self):
@@ -338,7 +365,7 @@ class WindowClass(QMainWindow, from_class):
         now = dt.now().strftime("%Y%m%d_%H%M")
         self.video_path = dev['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 30.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))
         
         self.desk_result = ""
         

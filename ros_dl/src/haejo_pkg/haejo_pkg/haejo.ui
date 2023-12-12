@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1221</width>
-    <height>836</height>
+    <height>889</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,12 +31,15 @@
    <property name="text">
     <string/>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>720</y>
+     <y>780</y>
      <width>641</width>
      <height>81</height>
     </rect>
@@ -116,8 +119,11 @@
      <x>710</x>
      <y>150</y>
      <width>491</width>
-     <height>651</height>
+     <height>721</height>
     </rect>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <column>
     <property name="text">
@@ -164,7 +170,7 @@
      <x>700</x>
      <y>40</y>
      <width>511</width>
-     <height>781</height>
+     <height>841</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -180,7 +186,7 @@
      <x>10</x>
      <y>40</y>
      <width>681</width>
-     <height>781</height>
+     <height>841</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -311,6 +317,32 @@
     </property>
    </widget>
   </widget>
+  <widget class="QPushButton" name="fx_button_play">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>710</y>
+     <width>41</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>▶</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="horizontalSlider">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>720</y>
+     <width>581</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
   <zorder>label_2</zorder>
   <zorder>label</zorder>
   <zorder>video</zorder>
@@ -319,6 +351,8 @@
   <zorder>db_button_search</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>groupBox_3</zorder>
+  <zorder>fx_button_play</zorder>
+  <zorder>horizontalSlider</zorder>
  </widget>
  <resources/>
  <connections/>
