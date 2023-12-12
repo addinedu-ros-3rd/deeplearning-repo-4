@@ -1,14 +1,11 @@
 import cv2
 import rclpy
 import numpy as np
-import time
 import torch.nn as nn
 import torch
 import mediapipe as mp
 import sys
-
-import torch.optim as optim
-import torch.nn.functional as F
+import configparser
 
 from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
@@ -23,9 +20,6 @@ from PyQt5 import uic
 from PyQt5.QtCore import *
 
 from . import data_manager
-
-import configparser
-
 from datetime import datetime as dt
 from haejo_pkg.utils import Logger
 from haejo_pkg.module import DetectDesk
