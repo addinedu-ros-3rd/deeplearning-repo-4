@@ -198,42 +198,44 @@ class DetectPhone(Node):
 class WindowClass(QMainWindow, from_class):
 
     def __init__(self):
-        try:
-            super().__init__()
-            self.setupUi(self)
-            
-            self.bridge = CvBridge()
-
-            self.isDetectPhoneOn = False
-            self.detectphone = DetectPhone()
-            
-            self.isDetectDeskOn = False
-            self.detectdesk = DetectDesk.DetectDesk()
-            
-            self.detectphone.create_subscription(
-            CompressedImage,
-            '/image_raw/compressed',
-            self.image_callback,
-            1)
-
-            self.detectdesk.create_subscription(
-            CompressedImage,
-            '/image_raw/compressed',
-            self.image_callback,
-            1)
-
-            self.pixmap = QPixmap()
-            
-            self.timer = QTimer(self)
-            self.timer.timeout.connect(self.spin_node)
-            self.timer.start(100)
-
-            '-----------camera-------------'
-            self.fx_button_phone.clicked.connect(self.click_detect_phone)
-            self.fx_button_desk.clicked.connect(self.click_detect_desk)
+        super().__init__()
+        self.setupUi(self)
         
-        except Exception as e:
-            log.error(f" deep_learning WindowClass __init__ : {e}")
+        self.bridge = CvBridge()
+
+        self.isDetectPhoneOn = False
+        self.detectphone = DetectPhone()
+        
+        self.isDetectDeskOn = False
+        self.detectdesk = DetectDesk.DetectDesk()
+        
+        self.detectphone.create_subscription(
+        CompressedImage,
+        '/image_raw/compressed',
+        self.image_callback,
+        1)
+
+        self.detectdesk.create_subscription(
+        CompressedImage,
+        '/image_raw/compressed',
+        self.image_callback,
+        1)
+
+        self.pixmap = QPixmap()
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.spin_node)
+        self.timer.start(100)
+        
+        self.set_combo()
+
+        '-----------camera-------------'
+        self.fx_button_phone.clicked.connect(self.click_detect_phone)
+        self.fx_button_desk.clicked.connect(self.click_detect_desk)
+        
+        
+    def set_combo(self):
+        self.sql = "select "
 
 
     def image_callback(self, msg):
