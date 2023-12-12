@@ -254,6 +254,8 @@ class WindowClass(QMainWindow, from_class):
             self.desk_result += result
             self.writer.write(img)
         
+        log.info(img.shape)
+        
         h, w, c = img.shape
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
 
@@ -320,6 +322,9 @@ class WindowClass(QMainWindow, from_class):
         
         
     def stop_rec_and_res(self, result):
+        self.pixmap = QPixmap()
+        self.label.setPixmap(self.pixmap)
+        
         try:
             self.writer.release()
             data_manager.insert_res(self.req_id, result, self.video_path)
