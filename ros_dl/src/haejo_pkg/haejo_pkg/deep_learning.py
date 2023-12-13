@@ -5,7 +5,6 @@ import torch.nn as nn
 import torch
 import mediapipe as mp
 import sys
-import configparser
 
 from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
@@ -22,15 +21,13 @@ from PyQt5.QtCore import *
 from . import data_manager
 from datetime import datetime as dt
 from haejo_pkg.utils import Logger
+from haejo_pkg.utils.ConfigUtil import get_config
 from haejo_pkg.modules import DetectDesk
 
 log = Logger.Logger('haejo_deep_learning.log')
+config = get_config()
 
-config = configparser.ConfigParser()
-config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-dev = config['yun']
-
-from_class = uic.loadUiType(dev['GUI'])[0]
+from_class = uic.loadUiType(config['GUI'])[0]
 
 mp_pose = mp.solutions.pose
 mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
@@ -92,13 +89,13 @@ class DetectPhone(Node):
 
         self.bridge = CvBridge()
 
-        self.yolo = YOLO(dev['phone_yolo_model'])
+        self.yolo = YOLO(config['phone_yolo_model'])
 
         self.labels = self.yolo.names
         self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
 
         self.model = skeleton_LSTM()
-        self.model.load_state_dict(torch.load(dev['phone_lstm_model'], map_location="cpu"))
+        self.model.load_state_dict(torch.load(config['phone_lstm_model'], map_location="cpu"))
         self.model.eval()
         print("success model load") 
 
@@ -363,7 +360,7 @@ class WindowClass(QMainWindow, from_class):
         self.req_id = data_manager.insert_req(module)
             
         now = dt.now().strftime("%Y%m%d_%H%M")
-        self.video_path = dev['video_dir'] + now + ".avi"
+        self.video_path = config['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
         self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))
         

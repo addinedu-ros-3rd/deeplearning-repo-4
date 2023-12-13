@@ -3,15 +3,12 @@ from rclpy.node import Node
 import cv2
 from haejo_pkg.yolov5 import detect
 from PIL import Image
-import configparser
 from haejo_pkg.utils import Logger
+from haejo_pkg.utils.ConfigUtil import get_config
 
 
 log = Logger.Logger('haejo_deep_learning.log')
-
-config = configparser.ConfigParser()
-config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-dev = config['yun']
+config = get_config()
 
 
 class DetectDesk(Node):
@@ -26,7 +23,7 @@ class DetectDesk(Node):
         img.save("./temp.jpg")
         
         try:
-            img = detect.run(weights=dev['desk_yolo_model'], source="./temp.jpg")
+            img = detect.run(weights=config['desk_yolo_model'], source="./temp.jpg")
         except Exception as e:
             log.error(f" deep_learning detect_desk : {e}")
         

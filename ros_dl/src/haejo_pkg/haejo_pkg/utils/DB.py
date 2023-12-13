@@ -1,15 +1,10 @@
 from . import Logger
+from .ConfigUtil import get_config
 
 import mysql.connector
-import configparser
 import os
 
-config = configparser.ConfigParser()
-config.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-
-print("cwd", os.getcwd())
-
-dev = config['yun']
+config = get_config()
 
 log = Logger.Logger('haejo_DB.log')
 
@@ -17,11 +12,11 @@ class DB():
     
     def __init__(self):
         try:
-            host = dev['host']
-            port = dev['port']
-            user = dev['user']
-            password = dev['password']
-            database = dev['database']
+            host = config['host']
+            port = config['port']
+            user = config['user']
+            password = config['password']
+            database = config['database']
             
             self.conn = mysql.connector.connect(host = host, 
                                                 port = port, 
