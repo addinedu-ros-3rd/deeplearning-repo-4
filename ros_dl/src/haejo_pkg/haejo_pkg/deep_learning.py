@@ -414,7 +414,7 @@ class WindowClass(QMainWindow, from_class):
 
     def start_rec_and_req(self, module):
         self.req_id = data_manager.insert_req(module)
-            
+
         now = dt.now().strftime("%Y%m%d_%H%M")
         self.filename = module + "_" + now + ".avi"
         self.local_path = config['video_dir'] + self.filename
