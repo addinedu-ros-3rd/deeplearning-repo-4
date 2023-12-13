@@ -1,5 +1,5 @@
 services:
-  deeplearning:
+  haejo-dl:
     image: haejo
     container_name: haejo
     build:
@@ -8,34 +8,23 @@ services:
         USER_NAME: appuser
         USER_ID: 1000
         GROUP_ID: 1000
-    volumes:
-      # code integration
-      - /home/yoh/deeplearning-repo-4:/workspace/project/
-      # using cam
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # using cam
     environment:
       - DISPLAY=unix$DISPLAY
-    # using cam
-    devices:
-      - /dev/video0:/dev/video0
+      - QT_DEBUG_PLUGINS=1
+      - QT_QPA_PLATFORM=xcb
+      - QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
+      - QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
+      - LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+      - ROS_DOMAIN_ID=$ROS_DOMAIN_ID
+
     # getting all gpus
     privileged: true
     # communication between containers and host
     network_mode: host
     pid: host
     ipc: host
-    # using gpu
-    deploy:
-      resources:
-        reservations:
-          devices:
-          - driver: nvidia  # if count of device_ids not given, all gpus used
-            capabilities: [gpu]
     
     # avoid exit
     tty: true
     stdin_open: true
-
-    # keep alive
     restart: always

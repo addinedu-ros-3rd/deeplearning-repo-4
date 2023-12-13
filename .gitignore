@@ -159,8 +159,18 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-/datasets
-/src/detect_desk/runs
 *.pt
 config.ini
 *.avi
+/train/detect_desk/datasets
+/train/detect_desk/test
+
+/ros_cam/build
+/ros_cam/install
+/ros_cam/log
+
+/ros_dl/build
+/ros_dl/install
+/ros_dl/log
+
+/ros_dl/temp.jpg

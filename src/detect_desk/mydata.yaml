@@ -1,7 +1,0 @@
-path: /home/yoh/dev_ws/yolo/yolov5/mydata/
-train: train
-val: valid
-test: test
-
-nc: 7
-names: ['coffee_cup', 'coffee_no_trash', 'cookie', 'paper', 'plastic', 'tissue', 'vinyl']
