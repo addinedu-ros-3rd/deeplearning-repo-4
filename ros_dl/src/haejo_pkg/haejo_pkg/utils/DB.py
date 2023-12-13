@@ -1,8 +1,7 @@
+import mysql.connector
+
 from . import Logger
 from .ConfigUtil import get_config
-
-import mysql.connector
-import os
 
 config = get_config()
 

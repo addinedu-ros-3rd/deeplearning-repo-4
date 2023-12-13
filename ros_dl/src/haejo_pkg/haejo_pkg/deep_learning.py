@@ -20,14 +20,14 @@ from PyQt5.QtCore import *
 
 from . import data_manager
 from datetime import datetime as dt
+from haejo_pkg.modules import DetectDesk
 from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
-from haejo_pkg.modules import DetectDesk
+
+config = get_config()
+from_class = uic.loadUiType(config['GUI'])[0]
 
 log = Logger.Logger('haejo_deep_learning.log')
-config = get_config()
-
-from_class = uic.loadUiType(config['GUI'])[0]
 
 mp_pose = mp.solutions.pose
 mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
@@ -359,7 +359,7 @@ class WindowClass(QMainWindow, from_class):
     def start_rec_and_req(self, module):
         self.req_id = data_manager.insert_req(module)
             
-        now = dt.now().strftime("%Y%m%d_%H%M")
+        now = dt.now().strftime("%Y%m%d_%H%M%S")
         self.video_path = config['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
         self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))

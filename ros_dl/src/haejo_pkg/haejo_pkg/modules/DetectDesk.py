@@ -6,9 +6,8 @@ from PIL import Image
 from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
 
-
-log = Logger.Logger('haejo_deep_learning.log')
 config = get_config()
+log = Logger.Logger('haejo_deep_learning.log')
 
 
 class DetectDesk(Node):
