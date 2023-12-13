@@ -404,9 +404,10 @@ class WindowClass(QMainWindow, from_class):
         self.req_id = data_manager.insert_req(module)
             
         now = dt.now().strftime("%Y%m%d_%H%M%S")
-        self.video_path = config['video_dir'] + now + ".avi"
+        self.filename = now + ".avi"
+        self.local_path = config['video_dir'] + self.filename
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.local_path, self.fourcc, 20.0, (640, 640))
         
         self.detect_result = ""
         
