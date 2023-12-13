@@ -309,7 +309,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
 
-            self.stop_rec_and_res(self.phone_status)
+            self.stop_rec_and_res(self.detect_result)
         
         
     def click_detect_desk(self):
