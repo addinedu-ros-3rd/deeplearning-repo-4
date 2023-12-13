@@ -20,11 +20,12 @@ def s3_put_object(local_path, filename):
     return True
 
 
-def s3_get_object(filename):
-    s3_client = boto3.client('s3')
-    response = s3_client.get_object(
-        Bucket="haejo",
-        Key=filename
-    )
-    
-    log.info(response)
+def s3_get_url(filename):
+    try:
+        s3_client = boto3.client('s3')
+        url = s3_client.generate_presigned_url( ClientMethod='get_object', Params={ 'Bucket': "haejo", 'Key': filename } )
+        
+        return url
+        
+    except Exception as e:
+        log.error(f" file_manager s3_put_object : {e}")
