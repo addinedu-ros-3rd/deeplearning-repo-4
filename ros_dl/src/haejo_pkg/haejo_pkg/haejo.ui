@@ -6,27 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1221</width>
-    <height>889</height>
+    <width>1240</width>
+    <height>880</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color: rgb(34, 33, 39);</string>
   </property>
   <widget class="QLabel" name="video">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>60</y>
+     <x>33</x>
+     <y>37</y>
      <width>640</width>
      <height>640</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(222, 221, 218);</string>
+    <string notr="true">background-color: rgb(0, 0, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -38,23 +38,43 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>780</y>
-     <width>641</width>
+     <x>33</x>
+     <y>750</y>
+     <width>638</width>
      <height>81</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Yrsa</family>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
+   </property>
    <property name="title">
-    <string>Real Time</string>
+    <string> Real Time</string>
    </property>
    <widget class="QPushButton" name="fx_button_phone">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>71</width>
+      <width>110</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>PHONE</string>
@@ -63,11 +83,21 @@
    <widget class="QPushButton" name="fx_button_door">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>140</x>
       <y>30</y>
-      <width>71</width>
+      <width>110</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>DOOR</string>
@@ -76,11 +106,21 @@
    <widget class="QPushButton" name="fx_button_light">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>270</x>
       <y>30</y>
-      <width>71</width>
+      <width>110</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>LIGHT</string>
@@ -89,11 +129,21 @@
    <widget class="QPushButton" name="fx_button_snack">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>400</x>
       <y>30</y>
-      <width>71</width>
+      <width>100</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>SNACK</string>
@@ -102,11 +152,21 @@
    <widget class="QPushButton" name="fx_button_desk">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>520</x>
       <y>30</y>
-      <width>71</width>
+      <width>110</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>DESK</string>
@@ -116,11 +176,20 @@
   <widget class="QTableWidget" name="db_tableWidget">
    <property name="geometry">
     <rect>
-     <x>710</x>
-     <y>150</y>
-     <width>491</width>
-     <height>721</height>
+     <x>723</x>
+     <y>137</y>
+     <width>481</width>
+     <height>701</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Yrsa</family>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
    </property>
    <property name="editTriggers">
     <set>QAbstractItemView::NoEditTriggers</set>
@@ -129,36 +198,76 @@
     <property name="text">
      <string>REQ_AT</string>
     </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
    </column>
    <column>
     <property name="text">
      <string>MODULE</string>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>14</pointsize>
+     </font>
     </property>
    </column>
    <column>
     <property name="text">
      <string>RESULT</string>
     </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
    </column>
    <column>
     <property name="text">
      <string>RES_AT</string>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>14</pointsize>
+     </font>
     </property>
    </column>
    <column>
     <property name="text">
      <string>FILE</string>
     </property>
+    <property name="font">
+     <font>
+      <family>Yrsa</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
    </column>
   </widget>
   <widget class="QPushButton" name="db_button_search">
    <property name="geometry">
     <rect>
-     <x>1120</x>
-     <y>70</y>
-     <width>81</width>
-     <height>61</height>
+     <x>1133</x>
+     <y>37</y>
+     <width>71</width>
+     <height>81</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Yrsa</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>SEARCH</string>
@@ -167,14 +276,14 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>700</x>
-     <y>40</y>
-     <width>511</width>
+     <x>703</x>
+     <y>17</y>
+     <width>521</width>
      <height>841</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(50, 45, 58);</string>
    </property>
    <property name="text">
     <string/>
@@ -183,14 +292,14 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>40</y>
+     <x>13</x>
+     <y>17</y>
      <width>681</width>
      <height>841</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(50, 45, 58);</string>
    </property>
    <property name="text">
     <string/>
@@ -199,14 +308,24 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>710</x>
-     <y>50</y>
+     <x>723</x>
+     <y>37</y>
      <width>120</width>
      <height>80</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Yrsa</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
+   </property>
    <property name="title">
-    <string>Module</string>
+    <string> Module</string>
    </property>
    <widget class="QComboBox" name="db_comboBox">
     <property name="geometry">
@@ -217,19 +336,32 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
+    </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>840</x>
-     <y>50</y>
+     <x>853</x>
+     <y>37</y>
      <width>271</width>
      <height>80</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Yrsa</family>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
+   </property>
    <property name="title">
-    <string>Date</string>
+    <string> Date</string>
    </property>
    <widget class="QDateEdit" name="db_date_from">
     <property name="geometry">
@@ -239,6 +371,10 @@
       <width>110</width>
       <height>26</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
     </property>
     <property name="maximumDateTime">
      <datetime>
@@ -276,6 +412,10 @@
       <height>26</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);</string>
+    </property>
     <property name="maximumDateTime">
      <datetime>
       <hour>23</hour>
@@ -306,8 +446,8 @@
    <widget class="QLabel" name="db_label_for">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>40</y>
+      <x>131</x>
+      <y>44</y>
       <width>16</width>
       <height>17</height>
      </rect>
@@ -320,11 +460,15 @@
   <widget class="QPushButton" name="fx_button_play">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>710</y>
+     <x>33</x>
+     <y>697</y>
      <width>41</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+</string>
    </property>
    <property name="text">
     <string>▶</string>
@@ -333,25 +477,131 @@
   <widget class="QSlider" name="horizontalSlider">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>720</y>
+     <x>90</x>
+     <y>698</y>
      <width>581</width>
-     <height>20</height>
+     <height>39</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">selection-color: rgb(255, 255, 255);
+</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <zorder>label_2</zorder>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>749</y>
+     <width>640</width>
+     <height>83</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>89</x>
+     <y>697</y>
+     <width>583</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>722</x>
+     <y>36</y>
+     <width>122</width>
+     <height>82</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>852</x>
+     <y>36</y>
+     <width>273</width>
+     <height>82</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>696</y>
+     <width>43</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>1132</x>
+     <y>36</y>
+     <width>73</width>
+     <height>83</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(72, 61, 84);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
   <zorder>label</zorder>
+  <zorder>label_6</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_4</zorder>
   <zorder>video</zorder>
   <zorder>groupBox</zorder>
   <zorder>db_tableWidget</zorder>
-  <zorder>db_button_search</zorder>
-  <zorder>groupBox_2</zorder>
   <zorder>groupBox_3</zorder>
+  <zorder>groupBox_2</zorder>
+  <zorder>label_7</zorder>
   <zorder>fx_button_play</zorder>
+  <zorder>label_8</zorder>
+  <zorder>db_button_search</zorder>
   <zorder>horizontalSlider</zorder>
  </widget>
  <resources/>

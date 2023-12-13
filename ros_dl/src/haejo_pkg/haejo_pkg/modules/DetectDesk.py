@@ -22,8 +22,8 @@ class DetectDesk(Node):
         img.save("./temp.jpg")
         
         try:
-            img = detect.run(weights=config['desk_yolo_model'], source="./temp.jpg")
+            img, result = detect.run(weights=config['desk_yolo_model'], source="./temp.jpg")
         except Exception as e:
             log.error(f" deep_learning detect_desk : {e}")
         
-        return img
+        return img, result

@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch
 import mediapipe as mp
 import sys
+import time
 
 from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
@@ -97,7 +98,7 @@ class DetectPhone(Node):
         self.model = skeleton_LSTM()
         self.model.load_state_dict(torch.load(config['phone_lstm_model'], map_location="cpu"))
         self.model.eval()
-        print("success model load") 
+        print("success model load")
 
     
     def pose_estimation(self, img):
@@ -191,6 +192,26 @@ class DetectPhone(Node):
                             status = 'work'
 
         return img, status
+    
+    
+class Camera(QThread):
+    update = pyqtSignal()
+
+    def __init__(self, sec=0, parent=None):
+        super().__init__()
+        self.main = parent
+        self.running = True
+
+
+    def run(self):
+        count = 0
+        while self.running == True:
+            self.update.emit()
+            time.sleep(0.05)
+
+    def stop(self):
+        self.running == False
+
 
 class WindowClass(QMainWindow, from_class):
 
@@ -199,6 +220,13 @@ class WindowClass(QMainWindow, from_class):
         self.setupUi(self)
         
         self.bridge = CvBridge()
+        
+        self.record = Camera(self)
+        self.record.deamon = True
+        self.record.update.connect(self.updateRecording)
+        
+        self.play = Camera(self)
+        self.play.daemon = True
 
         self.isDetectPhoneOn = False
         self.detectphone = DetectPhone()
@@ -222,7 +250,7 @@ class WindowClass(QMainWindow, from_class):
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.spin_node)
-        self.timer.start(100)
+        self.timer.start(10)
 
         '-----------camera-------------'
         self.fx_button_phone.clicked.connect(self.click_detect_phone)
@@ -232,7 +260,7 @@ class WindowClass(QMainWindow, from_class):
         self.set_combo()
         self.db_button_search.clicked.connect(self.search)
         self.db_tableWidget.itemDoubleClicked.connect(self.selectVideo)
-        
+        self.fx_button_play.clicked.connect(self.controlVideo)
         
         
     def set_combo(self):
@@ -273,6 +301,9 @@ class WindowClass(QMainWindow, from_class):
             
             
     def showThumbnail(self):
+        self.pixmap = QPixmap()
+        self.video.setPixmap(self.pixmap)
+        
         ret, frame = self.videoCapture.read()
         
         if ret:
@@ -286,7 +317,47 @@ class WindowClass(QMainWindow, from_class):
             self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
             
             self.video.setPixmap(self.pixmap)
+            
+    
+    def controlVideo(self):
+        if self.fx_button_play.text() == "▶":
+            self.playVideo()
+        else:
+            self.pauseVideo()
+            
+            
+    def playVideo(self):
+        self.isVideoEnd = False
+        self.fx_button_play.setText("❚❚")
         
+        while self.isVideoEnd == False:
+            ret, frame = self.videoCapture.read()
+            
+            if not ret:
+                self.isVideoEnd = True
+                self.fx_button_play.setText("▶")
+                break
+            
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            h, w, c = frame.shape
+            bytes_per_line = 3 * w
+            self.qimage = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+
+            self.pixmap = QPixmap.fromImage(self.qimage)
+            self.video.setPixmap(self.pixmap)
+            
+            QApplication.processEvents()  # prevent GUI freeze
+
+            time.sleep(0.05)  # 저장된 동영상에 맞게 setting
+
+        self.videoCapture.release()
+        
+        
+    def pauseVideo(self):
+        self.isVideoEnd = True
+        self.fx_button_play.setText("▶")
+
 
     def image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
@@ -294,11 +365,12 @@ class WindowClass(QMainWindow, from_class):
         if self.isDetectPhoneOn == True:
             img, status = self.detectphone.pose_estimation(cv_image)
             cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+            self.updateRecording(img)
             
         elif self.isDetectDeskOn == True:
             img, result = self.detectdesk.detect_desk(cv_image)
             self.desk_result += result
-            self.writer.write(img)
+            self.updateRecording(img)
         
         log.info(img.shape)
         
@@ -344,6 +416,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_phone.hide()
             
             self.start_rec_and_req('DESK')
+            self.desk_result = ""
 
         else:
             self.fx_button_desk.setText('DESK')
@@ -365,6 +438,10 @@ class WindowClass(QMainWindow, from_class):
         self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))
         
         self.desk_result = ""
+        
+        
+    def updateRecording(self, img):
+        self.writer.write(img)
         
         
     def stop_rec_and_res(self, result):
