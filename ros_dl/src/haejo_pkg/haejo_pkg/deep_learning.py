@@ -1,7 +1,7 @@
 import cv2
 import rclpy
-import configparser
 import sys
+import time
 
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
@@ -18,11 +18,12 @@ from datetime import datetime as dt
 from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
 
-from haejo_pkg.modules.detect_door import Detectdoor
-from haejo_pkg.modules.detect_light import Detectlight
+from haejo_pkg.modules.detect_door import DetectDoor
+# from haejo_pkg.modules.detect_light import DetectLight
 from haejo_pkg.modules.detect_phone import DetectPhone
-from haejo_pkg.modules.detect_snack import Detectsnack
+from haejo_pkg.modules.detect_snack import DetectSnack
 from haejo_pkg.modules.detect_desk import DetectDesk
+
 
 log = Logger.Logger('haejo_deep_learning.log')
 config = get_config()
@@ -65,9 +66,9 @@ class WindowClass(QMainWindow, from_class):
         self.isDetectDeskOn = False        
 
         self.detectphone = DetectPhone()
-        self.detectdoor = Detectdoor()
-        self.detectlight = Detectlight()
-        self.detectsnack = Detectsnack()
+        self.detectdoor = DetectDoor()
+        # self.detectlight = DetectLight()
+        self.detectsnack = DetectSnack()
         self.detectdesk = DetectDesk()
         
         '--------subscription----------'
@@ -85,12 +86,12 @@ class WindowClass(QMainWindow, from_class):
         1)
         self.door_sub
 
-        self.light_sub = self.detectlight.create_subscription(
-        Image,
-        '/image_raw',
-        self.image_callback,
-        1)
-        self.light_sub
+        # self.light_sub = self.detectlight.create_subscription(
+        # Image,
+        # '/image_raw',
+        # self.image_callback,
+        # 1)
+        # self.light_sub
 
         self.snack_sub = self.detectsnack.create_subscription(
         Image,
@@ -129,6 +130,34 @@ class WindowClass(QMainWindow, from_class):
         self.db_button_search.clicked.connect(self.search)
         self.db_tableWidget.itemDoubleClicked.connect(self.selectVideo)
         self.fx_button_play.clicked.connect(self.controlVideo)
+        
+        '-------------UI---------------'
+        self.white_button.clicked.connect(self.change_to_white)
+        self.dark_button.clicked.connect(self.change_to_black)
+        self.db_tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        self.zeroto255 = [self.fx_button_play, self.groupBox, self.fx_button_phone, self.fx_button_door,self.fx_button_light, 
+                          self.fx_button_snack, self.fx_button_desk, self.groupBox_2, self.db_comboBox, self.groupBox_3, 
+                          self.db_date_from, self.db_date_to, self.db_label_for,self.db_button_search,self.db_tableWidget, self.title_label]
+
+    
+    def change_colors(self, color_rgb):
+        for target in self.zeroto255:
+            target.setStyleSheet(f"color: {color_rgb};")
+    
+    def change_to_white(self):
+        self.change_colors("rgb(0, 0, 0)")
+        self.setStyleSheet("background-color: rgb(245, 245, 245);")
+        self.label_2.setStyleSheet("background-color: rgb(222, 221, 218);")
+        self.video.setStyleSheet("background-color: rgb(255, 255, 255); ")
+        self.label.setStyleSheet("background-color: rgb(222, 221, 218);  ")
+        
+    def change_to_black(self):
+        self.change_colors("rgb(255, 255, 255)") 
+        self.setStyleSheet("background-color: rgb(34, 33, 39);")
+        self.label_2.setStyleSheet("background-color: rgb(50, 45, 58);")
+        self.video.setStyleSheet("background-color: rgb(0, 0, 0); ")
+        self.label.setStyleSheet("background-color: rgb(50, 45, 58);  ")
         
         
     def set_combo(self):
@@ -247,8 +276,9 @@ class WindowClass(QMainWindow, from_class):
             self.updateRecording(img)
 
         elif self.isDetectLightOn == True:
-            img = self.detectlight.detect_light(cv_image)
-            self.updateRecording(img)
+            # img = self.detectlight.detect_light(cv_image)
+            # self.updateRecording(img)
+            log.info("detect light 주석 하고 테스트")
         
         log.info(img.shape)
         
@@ -414,7 +444,8 @@ class WindowClass(QMainWindow, from_class):
             rclpy.spin_once(self.detectsnack)
 
         elif self.isDetectLightOn == True:
-            rclpy.spin_once(self.detectlight)
+            # rclpy.spin_once(self.detectlight)
+            log.info("detect light 주석 하고 테스트")
 
         elif self.isDetectDoorOn == True:
             rclpy.spin_once(self.detectdoor)
@@ -426,7 +457,7 @@ class WindowClass(QMainWindow, from_class):
         log.info("shutting down ROS")
 
         self.detectphone.destroy_node()
-        self.detectlight.destroy_node()
+        # self.detectlight.destroy_node()
         self.detectdoor.destroy_node()
         self.detectsnack.destroy_node()
         self.detectdesk.destroy_node()

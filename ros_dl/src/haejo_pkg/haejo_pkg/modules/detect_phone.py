@@ -1,17 +1,20 @@
 import cv2
-import rclpy
 import numpy as np
 import torch.nn as nn
 import torch
 import mediapipe as mp
-import sys
 
 from torch.utils.data import Dataset, DataLoader
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator
 from rclpy.node import Node
-from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
+from haejo_pkg.utils.ConfigUtil import get_config
+from haejo_pkg.utils import Logger
+
+
+log = Logger.Logger('modules_detect_phone.log')
+config = get_config()
 
 
 mp_pose = mp.solutions.pose
@@ -72,19 +75,15 @@ class DetectPhone(Node):
         super().__init__('phone_detect')
 
         self.bridge = CvBridge()
-
-        self.yolo = YOLO("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolov5su.pt")
-
-        # self.yolo = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+        self.yolo = YOLO(config['phone_yolo_model'])
 
         self.labels = self.yolo.names
         self.colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in range(len(self.labels))] 
 
         self.model = skeleton_LSTM()
-        self.model.load_state_dict(torch.load("/home/soomin/dev_ws3/project/deeplearning-repo-4/src/detect_phone/model/yolo_state_dict.pt",
-                                                map_location="cpu"))
+        self.model.load_state_dict(torch.load(config['phone_lstm_model'], map_location="cuda"))
         self.model.eval()
-        print("success detect_phone model load") 
+        log.info("success detect_phone model load") 
 
     
     def pose_estimation(self, img):

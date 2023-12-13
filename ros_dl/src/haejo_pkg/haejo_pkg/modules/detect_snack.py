@@ -1,27 +1,31 @@
 import cv2
 import torch
 from rclpy.node import Node
+from haejo_pkg.utils.ConfigUtil import get_config
+from haejo_pkg.utils import Logger
 
 
-class Detectsnack(Node):
+log = Logger.Logger('modules_detect_snack.log')
+config = get_config()
+
+
+class DetectSnack(Node):
     def __init__(self):
         super().__init__('snack_detect')
-       
-        custom_model_path = '/home/soomin/ros_test/src/haejo_pkg/model/detect_snack.pt'
 
         # 모델을 로드할 때 허브 모듈을 강제로 다시 로드하도록 설정
-        self.model = torch.hub.load('ultralytics/yolov5:v7.0', 'custom', path=custom_model_path, force_reload=True)
+        self.model = torch.hub.load('ultralytics/yolov5:v7.0', 'custom', path=config['snack_model'], force_reload=True)
 
         # 모델을 추론 모드로 설정
         self.model.eval()
         
-        print("success detect_snack model load")        
+        log.info("success detect_snack model load")
     
     def detect_snack(self, img):
 
         # 추론 수행
         results = self.model(img)
-        print(results)
+        log.info(results)
 
         # 각 객체에 대해 결과 확인
         for i, det in enumerate(results.xyxy[0]):
@@ -36,11 +40,4 @@ class Detectsnack(Node):
                 cv2.putText(img, f"{self.model.names[label]}: {score:.2f}", (int(box[0]), int(box[1]) - 20),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-
         return img
-
-
-
-    
-
-

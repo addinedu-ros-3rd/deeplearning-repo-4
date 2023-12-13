@@ -2,17 +2,21 @@ import cv2
 import numpy as np
 from rclpy.node import Node
 from tensorflow.keras.models import load_model
+from haejo_pkg.utils.ConfigUtil import get_config
+from haejo_pkg.utils import Logger
 
 
-class Detectlight(Node):
+log = Logger.Logger('modules_detect_light.log')
+config = get_config()
+
+
+class DetectLight(Node):
     def __init__(self):
         super().__init__('light_detect')
-
-        custom_model_path = '/home/soomin/ros_test/src/haejo_pkg/model/light_on_off_model.keras'
         
-        self.model = load_model(custom_model_path)
+        self.model = load_model(config['light_model'])
         
-        print("success detect_light model load")  
+        log.info("success detect_light model load")  
               
 
     def detect_light(self, img):

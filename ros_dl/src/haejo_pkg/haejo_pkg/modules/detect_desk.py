@@ -7,7 +7,7 @@ from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
 
 
-log = Logger.Logger('haejo_deep_learning.log')
+log = Logger.Logger('modules_detect_desk.log')
 config = get_config()
 
 
@@ -23,7 +23,7 @@ class DetectDesk(Node):
         img.save("./temp.jpg")
         
         try:
-            img, result = detect.run(weights=config['desk_yolo_model'], source="./temp.jpg")
+            img, result = detect.run(weights=config['desk_model'], source="./temp.jpg")
         except Exception as e:
             log.error(f" deep_learning detect_desk : {e}")
         
