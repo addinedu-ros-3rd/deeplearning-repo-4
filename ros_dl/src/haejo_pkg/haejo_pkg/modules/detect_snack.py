@@ -13,8 +13,7 @@ class DetectSnack(Node):
     def __init__(self):
         super().__init__('snack_detect')
 
-        # 모델을 로드할 때 허브 모듈을 강제로 다시 로드하도록 설정
-        self.model = torch.hub.load('ultralytics/yolov5:v7.0', 'custom', path=config['snack_model'], force_reload=True)
+        self.model = torch.hub.load('ultralytics/yolov5:v7.0', 'custom', path=config['snack_model'], force_reload=False)
 
         # 모델을 추론 모드로 설정
         self.model.eval()
@@ -22,6 +21,8 @@ class DetectSnack(Node):
         log.info("success detect_snack model load")
     
     def detect_snack(self, img):
+        
+        snack_result = ""
 
         # 추론 수행
         results = self.model(img)
@@ -40,9 +41,8 @@ class DetectSnack(Node):
                 cv2.putText(img, f"{self.model.names[label]}: {score:.2f}", (int(box[0]), int(box[1]) - 20),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
                 
-                result = self.model.names[label]
+                snack_result = self.model.names[label]
                 
-            else:
-                result = ""
+        img = cv2.resize(img, (640, 640))  # display 크기 통일
 
-        return img, result
+        return img, snack_result

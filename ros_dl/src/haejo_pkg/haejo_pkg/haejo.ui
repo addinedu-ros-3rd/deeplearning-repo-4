@@ -372,6 +372,16 @@
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2023</year>
+      <month>12</month>
+      <day>1</day>
+     </datetime>
+    </property>
     <property name="maximumDateTime">
      <datetime>
       <hour>23</hour>
@@ -387,9 +397,9 @@
       <hour>0</hour>
       <minute>0</minute>
       <second>0</second>
-      <year>2023</year>
+      <year>2018</year>
       <month>12</month>
-      <day>2</day>
+      <day>1</day>
      </datetime>
     </property>
     <property name="displayFormat">
@@ -416,6 +426,16 @@
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2023</year>
+      <month>12</month>
+      <day>31</day>
+     </datetime>
     </property>
     <property name="maximumDateTime">
      <datetime>

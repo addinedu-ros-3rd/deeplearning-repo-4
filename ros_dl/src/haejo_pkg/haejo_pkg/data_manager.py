@@ -53,7 +53,8 @@ def select_video(module, start_date, end_date):
         if module != "ALL":
             sql += "AND t2.name = '" + module + "' "
             
-        sql += "group by t1.res_id "
+        sql += "GROUP BY t1.res_id " + \
+               "ORDER BY t1.response_at desc "
         
         db.execute(sql)
         videoList = db.fetchAll()
