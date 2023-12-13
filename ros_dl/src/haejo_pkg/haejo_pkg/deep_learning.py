@@ -20,10 +20,13 @@ from PyQt5 import uic
 from PyQt5.QtCore import *
 
 from . import data_manager
+from . import file_manager
+
 from datetime import datetime as dt
 from haejo_pkg.modules import DetectDesk
 from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
+
 
 config = get_config()
 from_class = uic.loadUiType(config['GUI'])[0]
@@ -31,8 +34,11 @@ from_class = uic.loadUiType(config['GUI'])[0]
 log = Logger.Logger('haejo_deep_learning.log')
 
 mp_pose = mp.solutions.pose
-mp_pose_pose = mp_pose.Pose(static_image_mode=False, model_complexity=1,
-                            enable_segmentation = False, min_detection_confidence=0.7)
+mp_pose_pose = mp_pose.Pose(static_image_mode=False, 
+                            model_complexity=1,
+                            enable_segmentation=False, 
+                            min_detection_confidence=0.7)
+
 xy_list_list = []
 
 attention_dot = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -98,7 +104,7 @@ class DetectPhone(Node):
         self.model = skeleton_LSTM()
         self.model.load_state_dict(torch.load(config['phone_lstm_model'], map_location="cpu"))
         self.model.eval()
-        print("success model load")
+        log.info("success model load")
 
     
     def pose_estimation(self, img):
@@ -294,6 +300,8 @@ class WindowClass(QMainWindow, from_class):
     def selectVideo(self, clickedItem):
         idx = self.db_tableWidget.model().index(clickedItem.row(), 4)
         file = self.db_tableWidget.model().data(idx)
+        log.info(file)
+        
         self.videoCapture = cv2.VideoCapture(file)
         
         if self.videoCapture.isOpened():  # VideoCapture 인스턴스 생성 확인
@@ -378,7 +386,6 @@ class WindowClass(QMainWindow, from_class):
         qimage = QImage(img.data, w, h, w*3, QImage.Format_BGR888)
 
         self.pixmap = self.pixmap.fromImage(qimage)
-        self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
 
         self.video.setPixmap(self.pixmap)
 
@@ -432,10 +439,13 @@ class WindowClass(QMainWindow, from_class):
     def start_rec_and_req(self, module):
         self.req_id = data_manager.insert_req(module)
             
-        now = dt.now().strftime("%Y%m%d_%H%M%S")
-        self.video_path = config['video_dir'] + now + ".avi"
+        # now = dt.now().strftime("%Y%m%d_%H%M%S")
+        # self.video_path = config['video_dir'] + now + ".avi"
+        
+        self.filename = dt.now().strftime("%Y%m%d_%H%M%S") + ".avi"
+        self.local_path = config['video_dir'] + self.filename
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.local_path, self.fourcc, 20.0, (640, 640))
         
         self.desk_result = ""
         
@@ -450,7 +460,12 @@ class WindowClass(QMainWindow, from_class):
         
         try:
             self.writer.release()
-            data_manager.insert_res(self.req_id, result, self.video_path)
+            s3_uploaded = file_manager.s3_put_object(self.local_path, self.filename)
+            
+            if s3_uploaded:
+                url = f"https://haejo.s3.ap-northeast-2.amazonaws.com/{self.local_path}"
+                data_manager.insert_res(self.req_id, result, url)
+        
         except Exception as e:
             log.error(f" deep_learning stop_rec_and_res : {e}")
             
