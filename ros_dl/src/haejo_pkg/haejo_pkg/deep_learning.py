@@ -12,6 +12,8 @@ from PyQt5 import uic
 from PyQt5.QtCore import *
 
 from . import data_manager
+from . import file_manager
+
 from datetime import datetime as dt
 from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
@@ -26,6 +28,25 @@ log = Logger.Logger('haejo_deep_learning.log')
 config = get_config()
 
 from_class = uic.loadUiType(config['GUI'])[0]
+
+
+class Camera(QThread):
+    update = pyqtSignal()
+
+    def __init__(self, sec=0, parent=None):
+        super().__init__()
+        self.main = parent
+        self.running = True
+
+
+    def run(self):
+        count = 0
+        while self.running == True:
+            self.update.emit()
+            time.sleep(0.05)
+
+    def stop(self):
+        self.running == False
 
 
 class WindowClass(QMainWindow, from_class):
@@ -99,10 +120,15 @@ class WindowClass(QMainWindow, from_class):
         self.fx_button_door.clicked.connect(self.click_detect_door)
         self.fx_button_light.clicked.connect(self.click_detect_light)
         
+        self.record = Camera(self)
+        self.record.deamon = True
+        self.record.update.connect(self.updateRecording)
+        
         '-------------DB---------------'
         self.set_combo()
         self.db_button_search.clicked.connect(self.search)
         self.db_tableWidget.itemDoubleClicked.connect(self.selectVideo)
+        self.fx_button_play.clicked.connect(self.controlVideo)
         
         
     def set_combo(self):
@@ -156,6 +182,46 @@ class WindowClass(QMainWindow, from_class):
             self.pixmap = self.pixmap.scaled(self.label.width(), self.label.height())
             
             self.video.setPixmap(self.pixmap)
+            
+            
+    def controlVideo(self):
+        if self.fx_button_play.text() == "▶":
+            self.playVideo()
+        else:
+            self.pauseVideo()
+            
+            
+    def playVideo(self):
+        self.isVideoEnd = False
+        self.fx_button_play.setText("❚❚")
+        
+        while self.isVideoEnd == False:
+            ret, frame = self.videoCapture.read()
+            
+            if not ret:
+                self.isVideoEnd = True
+                self.fx_button_play.setText("▶")
+                break
+            
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            h, w, c = frame.shape
+            bytes_per_line = 3 * w
+            self.qimage = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
+
+            self.pixmap = QPixmap.fromImage(self.qimage)
+            self.video.setPixmap(self.pixmap)
+            
+            QApplication.processEvents()  # prevent GUI freeze
+
+            time.sleep(0.05)  # 저장된 동영상에 맞게 setting
+
+        self.videoCapture.release()
+        
+        
+    def pauseVideo(self):
+        self.isVideoEnd = True
+        self.fx_button_play.setText("▶")
         
 
     def image_callback(self, msg):
@@ -164,20 +230,25 @@ class WindowClass(QMainWindow, from_class):
         if self.isDetectPhoneOn == True:
             img, status = self.detectphone.pose_estimation(cv_image)
             cv2.putText(img, status, (0, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 0, 255), 2)
+            self.detect_result += status
+            self.updateRecording(img)
             
         elif self.isDetectDeskOn == True:
             img, result = self.detectdesk.detect_desk(cv_image)
-            self.desk_result += result
-            self.writer.write(img)
+            self.detect_result += result
+            self.updateRecording(img)
 
         elif self.isDetectDoorOn == True:
             img = self.detectdoor.detect_door(cv_image)
+            self.updateRecording(img)
 
         elif self.isDetectSnackOn == True:
             img = self.detectsnack.detect_snack(cv_image)
+            self.updateRecording(img)
 
         elif self.isDetectLightOn == True:
-            img = self.detectlight.detect_light(cv_image)   
+            img = self.detectlight.detect_light(cv_image)
+            self.updateRecording(img)
         
         log.info(img.shape)
         
@@ -210,7 +281,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
 
-            self.stop_rec_and_res("WORK")  # to do: 인식 결과 받도록 수정
+            self.stop_rec_and_res(self.phone_status)
         
         
     def click_detect_desk(self):
@@ -232,6 +303,8 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_snack.show()
             self.fx_button_phone.show()
             
+            self.stop_rec_and_res(self.detect_result)
+            
     
     def click_detect_door(self):
         if self.isDetectDoorOn == False:
@@ -251,6 +324,8 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_phone.show()
             self.fx_button_desk.show()
             self.fx_button_snack.show()
+            
+            self.stop_rec_and_res('DOOR RESULT')  # to do: 실제 인식 결과 기록 필요
 
 
     def click_detect_light(self):
@@ -271,6 +346,8 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_door.show()
             self.fx_button_desk.show()
             self.fx_button_snack.show()
+            
+            self.stop_rec_and_res('LIGHT RESULT')  # to do: 실제 인식 결과 기록 필요
 
 
     def click_detect_snack(self):
@@ -292,16 +369,22 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_phone.show()
             
+            self.stop_rec_and_res('SNACK RESULT')  # to do: 실제 인식 결과 기록 필요
+            
 
     def start_rec_and_req(self, module):
         self.req_id = data_manager.insert_req(module)
             
-        now = dt.now().strftime("%Y%m%d_%H%M")
+        now = dt.now().strftime("%Y%m%d_%H%M%S")
         self.video_path = config['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 60.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
         
-        self.desk_result = ""
+        self.detect_result = ""
+        
+        
+    def updateRecording(self, img):
+        self.writer.write(img)
         
         
     def stop_rec_and_res(self, result):
@@ -310,7 +393,12 @@ class WindowClass(QMainWindow, from_class):
         
         try:
             self.writer.release()
-            data_manager.insert_res(self.req_id, result, self.video_path)
+            s3_uploaded = file_manager.s3_put_object(self.local_path, self.filename)
+            
+            if s3_uploaded:
+                url = f"https://haejo.s3.ap-northeast-2.amazonaws.com/{self.local_path}"
+                data_manager.insert_res(self.req_id, result, url)
+                
         except Exception as e:
             log.error(f" deep_learning stop_rec_and_res : {e}")
             
@@ -331,11 +419,11 @@ class WindowClass(QMainWindow, from_class):
         elif self.isDetectDoorOn == True:
             rclpy.spin_once(self.detectdoor)
         else:
-            print("not detect mode")
+            log.info("not detect mode")
     
 
     def shutdown_ros(self):
-        print("shutting down ROS")
+        log.info("shutting down ROS")
 
         self.detectphone.destroy_node()
         self.detectlight.destroy_node()
