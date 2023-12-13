@@ -21,10 +21,14 @@ def s3_put_object(local_path, filename):
 
 
 def s3_get_object(filename):
-    s3_client = boto3.client('s3')
-    response = s3_client.get_object(
-        Bucket="haejo",
-        Key=filename
-    )
+    try:
+        s3_client = boto3.client('s3')
+        response = s3_client.get_object(
+            Bucket="haejo",
+            Key=filename
+        )
     
-    log.info(response)
+        log.info(response)
+        
+    except Exception as e:
+        log.error(f" file_manager s3_put_object : {e}")

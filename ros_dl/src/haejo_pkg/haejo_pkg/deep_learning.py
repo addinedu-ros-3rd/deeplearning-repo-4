@@ -19,7 +19,7 @@ from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
 
 from haejo_pkg.modules.detect_door import DetectDoor
-from haejo_pkg.modules.detect_light import DetectLight
+# from haejo_pkg.modules.detect_light import DetectLight
 from haejo_pkg.modules.detect_phone import DetectPhone
 from haejo_pkg.modules.detect_snack import DetectSnack
 from haejo_pkg.modules.detect_desk import DetectDesk
@@ -66,7 +66,7 @@ class WindowClass(QMainWindow, from_class):
 
         self.detectphone = DetectPhone()
         self.detectdoor = DetectDoor()
-        self.detectlight = DetectLight()
+        # self.detectlight = DetectLight()
         self.detectsnack = DetectSnack()
         self.detectdesk = DetectDesk()
         
@@ -85,12 +85,12 @@ class WindowClass(QMainWindow, from_class):
         1)
         self.door_sub
 
-        self.light_sub = self.detectlight.create_subscription(
-        Image,
-        '/image_raw',
-        self.image_callback,
-        1)
-        self.light_sub
+        # self.light_sub = self.detectlight.create_subscription(
+        # Image,
+        # '/image_raw',
+        # self.image_callback,
+        # 1)
+        # self.light_sub
 
         self.snack_sub = self.detectsnack.create_subscription(
         Image,
@@ -144,12 +144,14 @@ class WindowClass(QMainWindow, from_class):
         for target in self.zeroto255:
             target.setStyleSheet(f"color: {color_rgb};")
     
+    
     def change_to_white(self):
         self.change_colors("rgb(0, 0, 0)")
         self.setStyleSheet("background-color: rgb(245, 245, 245);")
         self.label_2.setStyleSheet("background-color: rgb(222, 221, 218);")
         self.video.setStyleSheet("background-color: rgb(255, 255, 255); ")
         self.label.setStyleSheet("background-color: rgb(222, 221, 218);  ")
+        
         
     def change_to_black(self):
         self.change_colors("rgb(255, 255, 255)") 
@@ -275,8 +277,9 @@ class WindowClass(QMainWindow, from_class):
             self.updateRecording(img)
 
         elif self.isDetectLightOn == True:
-            img = self.detectlight.detect_light(cv_image)
-            self.updateRecording(img)
+            # img = self.detectlight.detect_light(cv_image)
+            # self.updateRecording(img)
+            log.info("detect light 주석 후 테스트 중")
         
         log.info(img.shape)
         
@@ -309,7 +312,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
 
-            self.stop_rec_and_res(self.phone_status)
+            self.stop_rec_and_res(self.detect_result)
         
         
     def click_detect_desk(self):
@@ -447,15 +450,13 @@ class WindowClass(QMainWindow, from_class):
 
         elif self.isDetectDoorOn == True:
             rclpy.spin_once(self.detectdoor)
-        else:
-            log.info("not detect mode")
     
 
     def shutdown_ros(self):
         log.info("shutting down ROS")
 
         self.detectphone.destroy_node()
-        self.detectlight.destroy_node()
+        # self.detectlight.destroy_node()
         self.detectdoor.destroy_node()
         self.detectsnack.destroy_node()
         self.detectdesk.destroy_node()
