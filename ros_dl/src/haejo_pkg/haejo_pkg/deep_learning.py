@@ -19,7 +19,7 @@ from haejo_pkg.utils import Logger
 from haejo_pkg.utils.ConfigUtil import get_config
 
 from haejo_pkg.modules.detect_door import DetectDoor
-# from haejo_pkg.modules.detect_light import DetectLight
+from haejo_pkg.modules.detect_light import DetectLight
 from haejo_pkg.modules.detect_phone import DetectPhone
 from haejo_pkg.modules.detect_snack import DetectSnack
 from haejo_pkg.modules.detect_desk import DetectDesk
@@ -66,7 +66,7 @@ class WindowClass(QMainWindow, from_class):
 
         self.detectphone = DetectPhone()
         self.detectdoor = DetectDoor()
-        # self.detectlight = DetectLight()
+        self.detectlight = DetectLight()
         self.detectsnack = DetectSnack()
         self.detectdesk = DetectDesk()
         
@@ -85,12 +85,12 @@ class WindowClass(QMainWindow, from_class):
         1)
         self.door_sub
 
-        # self.light_sub = self.detectlight.create_subscription(
-        # Image,
-        # '/image_raw',
-        # self.image_callback,
-        # 1)
-        # self.light_sub
+        self.light_sub = self.detectlight.create_subscription(
+        Image,
+        '/image_raw',
+        self.image_callback,
+        1)
+        self.light_sub
 
         self.snack_sub = self.detectsnack.create_subscription(
         Image,
@@ -282,9 +282,9 @@ class WindowClass(QMainWindow, from_class):
             self.detect_result += result
 
         elif self.isDetectLightOn == True:
-            # img = self.detectlight.detect_light(cv_image)
-            # self.updateRecording(img)
-            log.info("detect light 주석 후 테스트 중")
+            img = self.detectlight.detect_light(cv_image)
+            self.updateRecording(img)
+            # log.info("detect light 주석 후 테스트 중")
             
         self.updateRecording(img)
         self.showCam(img)
@@ -454,8 +454,8 @@ class WindowClass(QMainWindow, from_class):
             rclpy.spin_once(self.detectsnack)
 
         elif self.isDetectLightOn == True:
-            # rclpy.spin_once(self.detectlight)
-            log.info("detect light 주석 하고 테스트")
+            rclpy.spin_once(self.detectlight)
+            # log.info("detect light 주석 하고 테스트")
 
         elif self.isDetectDoorOn == True:
             rclpy.spin_once(self.detectdoor)
@@ -465,7 +465,7 @@ class WindowClass(QMainWindow, from_class):
         log.info("shutting down ROS")
 
         self.detectphone.destroy_node()
-        # self.detectlight.destroy_node()
+        self.detectlight.destroy_node()
         self.detectdoor.destroy_node()
         self.detectsnack.destroy_node()
         self.detectdesk.destroy_node()

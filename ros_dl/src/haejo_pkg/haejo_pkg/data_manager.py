@@ -63,9 +63,3 @@ def select_video(module, start_date, end_date):
         
     except Exception as e:
         log.error(f" data_manager select_video : {e}")
-        
-        
-if __name__ == '__main__':
-    log.info('data_manager ok')
-    req_id = insert_req('detect_desk')
-    insert_res(req_id, 'vinyl', 'python_test')
