@@ -271,20 +271,18 @@ class WindowClass(QMainWindow, from_class):
             
         elif self.isDetectDeskOn == True:
             img, result = self.detectdesk.detect_desk(cv_image)
-            self.detect_result += result
 
         elif self.isDetectDoorOn == True:
             img, result = self.detectdoor.detect_door(cv_image)
-            self.detect_result += result
 
         elif self.isDetectSnackOn == True:
             img, result = self.detectsnack.detect_snack(cv_image)
-            self.detect_result += result
 
         elif self.isDetectLightOn == True:
-            img = self.detectlight.detect_light(cv_image)
-            self.updateRecording(img)
-            # log.info("detect light 주석 후 테스트 중")
+            img, result = self.detectlight.detect_light(cv_image)
+            
+        if result:
+            self.detect_result += result
             
         self.updateRecording(img)
         self.showCam(img)
@@ -387,7 +385,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
             
-            self.stop_rec_and_res('LIGHT RESULT')  # to do: 실제 인식 결과 기록 필요
+            self.stop_rec_and_res()
 
 
     def click_detect_snack(self):
@@ -455,7 +453,6 @@ class WindowClass(QMainWindow, from_class):
 
         elif self.isDetectLightOn == True:
             rclpy.spin_once(self.detectlight)
-            # log.info("detect light 주석 하고 테스트")
 
         elif self.isDetectDoorOn == True:
             rclpy.spin_once(self.detectdoor)

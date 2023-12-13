@@ -46,10 +46,7 @@ class DetectLight(Node):
 
         # 결과를 화면에 출력
         cv2.putText(img, class_label_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 10, 0), 2)
+        
+        img = cv2.resize(img, (640, 640))  # display 크기 통일
 
-
-        return img
-
-    
-
-
+        return img, class_label_text

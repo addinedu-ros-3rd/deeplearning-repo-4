@@ -425,5 +425,5 @@ wrapt==1.13.3
 xacro==2.0.8
 xdg==5
 xkit==0.0.0
-yolov5==7.0.13
 zipp==1.0.0
+tensorflow==2.14.0
