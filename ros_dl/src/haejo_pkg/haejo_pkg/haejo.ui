@@ -195,7 +195,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
    </column>
@@ -206,7 +206,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
    </column>
@@ -217,7 +217,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
    </column>
@@ -228,7 +228,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
    </column>
@@ -239,7 +239,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>16</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
    </column>
@@ -256,7 +256,7 @@
    <property name="font">
     <font>
      <family>Ubuntu Light</family>
-     <pointsize>16</pointsize>
+     <pointsize>18</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -310,7 +310,7 @@
    <property name="font">
     <font>
      <family>Ubuntu Light</family>
-     <pointsize>17</pointsize>
+     <pointsize>18</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -345,7 +345,7 @@
    <property name="font">
     <font>
      <family>Ubuntu Light</family>
-     <pointsize>17</pointsize>
+     <pointsize>18</pointsize>
     </font>
    </property>
    <property name="styleSheet">
@@ -366,7 +366,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>14</pointsize>
+      <pointsize>15</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -411,7 +411,7 @@
     <property name="font">
      <font>
       <family>Ubuntu Light</family>
-      <pointsize>14</pointsize>
+      <pointsize>15</pointsize>
      </font>
     </property>
     <property name="styleSheet">
