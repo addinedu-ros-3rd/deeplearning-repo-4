@@ -269,11 +269,13 @@ class WindowClass(QMainWindow, from_class):
             self.updateRecording(img)
 
         elif self.isDetectDoorOn == True:
-            img = self.detectdoor.detect_door(cv_image)
+            img, result = self.detectdoor.detect_door(cv_image)
+            self.detect_result += result
             self.updateRecording(img)
 
         elif self.isDetectSnackOn == True:
             img = self.detectsnack.detect_snack(cv_image)
+            self.detect_result += result
             self.updateRecording(img)
 
         elif self.isDetectLightOn == True:
@@ -312,7 +314,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
 
-            self.stop_rec_and_res(self.detect_result)
+            self.stop_rec_and_res()
         
         
     def click_detect_desk(self):
@@ -334,7 +336,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_snack.show()
             self.fx_button_phone.show()
             
-            self.stop_rec_and_res(self.detect_result)
+            self.stop_rec_and_res()
             
     
     def click_detect_door(self):
@@ -356,7 +358,7 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_snack.show()
             
-            self.stop_rec_and_res('DOOR RESULT')  # to do: 실제 인식 결과 기록 필요
+            self.stop_rec_and_res()
 
 
     def click_detect_light(self):
@@ -400,16 +402,16 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_desk.show()
             self.fx_button_phone.show()
             
-            self.stop_rec_and_res('SNACK RESULT')  # to do: 실제 인식 결과 기록 필요
+            self.stop_rec_and_res()
             
 
     def start_rec_and_req(self, module):
         self.req_id = data_manager.insert_req(module)
             
         now = dt.now().strftime("%Y%m%d_%H%M%S")
-        self.video_path = config['video_dir'] + now + ".avi"
+        self.local_path = config['video_dir'] + now + ".avi"
         self.fourcc = cv2.VideoWriter_fourcc(*"XVID")
-        self.writer = cv2.VideoWriter(self.video_path, self.fourcc, 20.0, (640, 640))
+        self.writer = cv2.VideoWriter(self.local_path, self.fourcc, 20.0, (640, 640))
         
         self.detect_result = ""
         
@@ -418,7 +420,7 @@ class WindowClass(QMainWindow, from_class):
         self.writer.write(img)
         
         
-    def stop_rec_and_res(self, result):
+    def stop_rec_and_res(self):
         self.pixmap = QPixmap()
         self.video.setPixmap(self.pixmap)
         
@@ -428,7 +430,7 @@ class WindowClass(QMainWindow, from_class):
             
             if s3_uploaded:
                 url = f"https://haejo.s3.ap-northeast-2.amazonaws.com/{self.local_path}"
-                data_manager.insert_res(self.req_id, result, url)
+                data_manager.insert_res(self.req_id, self.detect_result, url)
                 
         except Exception as e:
             log.error(f" deep_learning stop_rec_and_res : {e}")

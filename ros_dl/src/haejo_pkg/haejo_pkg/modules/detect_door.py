@@ -43,13 +43,15 @@ class DetectDoor(Node):
                 # 박스 그리기
                 color = (0, 255, 0)  # 녹색
                 annotator.box_label(box, self.model.names[label], color)
+                result = self.model.names[label]
             else:
                 cv2.putText(img, "NOT DETECT DOOR", (320,320), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0), 2)
+                result = ""
         
         img = annotator.result()
         # 결과 표시
 
-        return img        
+        return img, result
 
     
 

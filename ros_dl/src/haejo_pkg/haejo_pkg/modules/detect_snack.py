@@ -39,5 +39,10 @@ class DetectSnack(Node):
                 cv2.rectangle(img, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), color, 2)
                 cv2.putText(img, f"{self.model.names[label]}: {score:.2f}", (int(box[0]), int(box[1]) - 20),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+                
+                result = self.model.names[label]
+                
+            else:
+                result = ""
 
-        return img
+        return img, result
