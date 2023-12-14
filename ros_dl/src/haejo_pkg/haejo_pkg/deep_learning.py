@@ -186,11 +186,6 @@ class WindowClass(QMainWindow, from_class):
             self.db_tableWidget.insertRow(resultRow)
             for i, v in enumerate(row):
                 self.db_tableWidget.setItem(resultRow, i, QTableWidgetItem(str(v)))
-                
-        header = self.db_tableWidget.horizontalHeader()
-        
-        for col in range(self.db_tableWidget.columnCount()):
-            header.setSectionResizeMode(col, QHeaderView.ResizeToContents)
             
             
     def selectVideo(self, clickedItem):
@@ -310,7 +305,6 @@ class WindowClass(QMainWindow, from_class):
             self.fx_button_snack.hide()
             
             self.start_rec_and_req('PHONE')
-
 
         else:
             self.fx_button_phone.setText('PHONE')
