@@ -2,7 +2,7 @@
 torch==2.1.0
 --index-url https://download.pytorch.org/whl/cu118
 torchvision==0.16.0
-ultralytics==8.0.219
+ultralytics
 tensorflow==2.14.0
 opencv-contrib-python==4.8.0.74
 opencv-python==4.8.0.74
