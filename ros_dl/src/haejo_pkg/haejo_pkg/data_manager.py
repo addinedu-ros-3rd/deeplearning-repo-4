@@ -16,6 +16,8 @@ def insert_req(module):
         
 def insert_res(req_id, result, file_path):
     try:
+        if len(result) > 256:
+            result = result[:256]
         db.callProc('insert_res', (req_id, result, file_path))
         
     except Exception as e:
