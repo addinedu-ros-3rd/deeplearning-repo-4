@@ -1,45 +1,78 @@
-# 🌞
-## 프로젝트 간략 설명
-**학원에서 사용할 수 있는 학습도우미 로봇**
+# 🌞 딥러닝 학습도우미
+- 학습 집중을 방해하는 요소를 확인해 주는 딥러닝 모델 개발
 <p align=center width="100%">
-  <img src="https://haejo.s3.ap-northeast-2.amazonaws.com/snack.gif" height="300" width="20%" style="float:left">
-  <img src="https://haejo.s3.ap-northeast-2.amazonaws.com/door.gif" height="300" width="20%" style="float:left">
-  <img src="https://haejo.s3.ap-northeast-2.amazonaws.com/desk.gif" height="300" width="20%" style="float:left">
-  <img src="https://haejo.s3.ap-northeast-2.amazonaws.com/vllo.gif" height="300" width="20%" style="float:left">
+  <img src="/image/door.gif" height="300" width="22%" style="float:left">
+  <img src="/image/snack.gif" height="300" width="22%" style="float:left">
+  <img src="/image/desk.gif" height="300" width="22%" style="float:left">
+  <img src="/image/phone.gif" height="300" width="22%" style="float:left">
 </p>
 
-### 주요 기능
+## 팀원 소개 및 역할
+|구분|이름|역할|
+|---|---|---|
+|팀장|이충한|PM, PyQt GUI 개발, 데이터 라벨링|
+|팀원|강병철|CNN/VGG16 전이학습, YOLOv5 활용|
+|팀원|오윤|시스템 구성도 및 시나리오 작성, YOLOv5 활용, DB 설계, AWS S3 연동, Query/SP 작성|
+|팀원|이수민|LSTM/YOLOv8 활용, ROS2, mediapipe, PyQt|
+
+## 프로젝트 기간
+2023.11.17 ~ 12.15
+
+## 기술 스택
+### 개발 환경
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
+![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)
+![RDS](https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white)
+![S3](https://img.shields.io/badge/AWS%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white)
+![Qt](https://img.shields.io/badge/Qt-41CD52?style=for-the-badge&logo=Qt&logoColor=white)
+
+### 언어
+![Python](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+### 딥러닝
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=PyTorch&logoColor=white)
+![Tensorflow](https://img.shields.io/badge/Tensorflow-FF6F00?style=for-the-badge&logo=Tensorflow&logoColor=white)
+
+
+### 통신
+![ROS2](https://img.shields.io/badge/ROS2-22314E?style=for-the-badge&logo=ROS&logoColor=white)
+
+### DBMS
+![Mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### 커뮤니케이션
+![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white)
+![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=Confluence&logoColor=white)
+![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+
+
+
+## 주요 기능
 <p align="center">
   <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/027b1c49-424b-4bc9-9b2c-d049aae24012" width="90%" style="float:left">
 </p>
 
-### 소프트웨어 구성도
+## 시스템 구성도
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/3a5e83db-e780-4cb0-bd10-0faad1960bb5" width="80%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/12db4c1b-77c2-4ff3-aaef-350b12407a9d" width="90%" style="float:left">
 </p>
 
-### 통신
-- 주요기능의 1~5번기능은 ROS를 사용하여 카메라로부터 나오는 /image_raw 토픽을 받아 처리
+## 실시간 시나리오
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/45cb0a28-8b2e-4171-8a51-e457bed232cb" width="80%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/72335925-b7b4-4ade-9851-57b6c7e7313e" width="90%" style="float:left">
 </p>
 
-### 객체 인식 데이터 구조
+## 저장된 영상 확인 시나리오
+<p align="center">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/af410886-bc12-48c9-8515-3937d52d2a24" width="90%" style="float:left">
+</p>
+
+## 객체 인식 데이터 구조
 <p align="center">
   <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/146153568/cdcd0e05-f24b-4878-8a63-9a0eee9687b2" width="70%" style="float:left">
 </p>
 
-### 실시간 시나리오
-<p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/ed9fbd52-8ae4-43b9-bcf8-ae23da74032b" width="90%" style="float:left">
-</p>
-
-### 저장된 영상 확인 시나리오
-<p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/a3db74d7-36f3-4eb2-a02f-898e199af59d" width="90%" style="float:left">
-</p>
-
-
-### Docker 이미지 배포
+## 실행
 - dockerfile이 있는 경로에서
 ```docker compose up -d```로 실행
