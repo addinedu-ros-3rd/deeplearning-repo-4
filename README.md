@@ -135,7 +135,7 @@
 |---|---|---|
 |팀장|이충한|PM, PyQt GUI 개발, 데이터 라벨링|
 |팀원|강병철|CNN/VGG16 전이학습, YOLOv5 활용|
-|팀원|오윤|시스템 구성도 및 시나리오 작성, YOLOv5 활용, DB 설계, AWS S3 연동, Query/SP 작성|
+|팀원|오윤|시스템 구성도 및 시나리오 작성, YOLOv5 활용, DB 설계, AWS S3 연동, Query/SP 작성, Dockerfile/compose.yaml 작성|
 |팀원|이수민|LSTM/YOLOv8 활용, ROS2, mediapipe, PyQt|
 
 ## 5. 회고
