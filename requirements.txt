@@ -7,3 +7,4 @@ opencv-python==4.8.0.74
 mediapipe==0.10.8
 mysql-connector-python==8.0.33
 PyQt5==5.14.2
+boto3==1.33.13
