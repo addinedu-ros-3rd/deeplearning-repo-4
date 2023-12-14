@@ -25,7 +25,7 @@ from haejo_pkg.modules.detect_snack import DetectSnack
 from haejo_pkg.modules.detect_desk import DetectDesk
 
 
-log = Logger.Logger('haejo_deep_learning.log')
+log = Logger.Logger('deep_learning.py')
 config = get_config()
 
 from_class = uic.loadUiType(config['GUI'])[0]
@@ -271,17 +271,18 @@ class WindowClass(QMainWindow, from_class):
             
         elif self.isDetectDeskOn == True:
             img, result = self.detectdesk.detect_desk(cv_image)
+            self.detect_result += result
 
         elif self.isDetectDoorOn == True:
             img, result = self.detectdoor.detect_door(cv_image)
+            self.detect_result += result
 
         elif self.isDetectSnackOn == True:
             img, result = self.detectsnack.detect_snack(cv_image)
+            self.detect_result += result
 
         elif self.isDetectLightOn == True:
             img, result = self.detectlight.detect_light(cv_image)
-            
-        if result:
             self.detect_result += result
             
         self.updateRecording(img)

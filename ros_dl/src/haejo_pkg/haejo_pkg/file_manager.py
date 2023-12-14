@@ -4,7 +4,7 @@ import boto3
 
 
 config = get_config()
-log = Logger.Logger('haejo_file_manager.log')
+log = Logger.Logger('file_manager.py')
 
 
 def s3_put_object(local_path, filename):

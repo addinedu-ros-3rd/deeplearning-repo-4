@@ -6,7 +6,7 @@ from haejo_pkg.utils.ConfigUtil import get_config
 from haejo_pkg.utils import Logger
 
 
-log = Logger.Logger('modules_detect_light.log')
+log = Logger.Logger('detect_light.py')
 config = get_config()
 
 

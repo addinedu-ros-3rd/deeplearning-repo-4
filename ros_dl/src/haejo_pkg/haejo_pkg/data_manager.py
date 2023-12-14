@@ -1,7 +1,7 @@
 from .utils import DB, Logger
 
 db = DB.DB()
-log = Logger.Logger('haejo_data_manager.log')
+log = Logger.Logger('data_manager.py')
 
 def insert_req(module):
     try:

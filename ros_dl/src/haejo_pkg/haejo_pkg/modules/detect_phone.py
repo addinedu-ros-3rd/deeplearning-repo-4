@@ -13,7 +13,7 @@ from haejo_pkg.utils.ConfigUtil import get_config
 from haejo_pkg.utils import Logger
 
 
-log = Logger.Logger('modules_detect_phone.log')
+log = Logger.Logger('detect_phone.py')
 config = get_config()
 
 

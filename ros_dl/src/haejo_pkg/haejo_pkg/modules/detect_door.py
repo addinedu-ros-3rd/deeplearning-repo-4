@@ -5,7 +5,7 @@ from ultralytics.utils.plotting import Annotator
 from haejo_pkg.utils.ConfigUtil import get_config
 from haejo_pkg.utils import Logger
 
-log = Logger.Logger('modules_detect_door.log')
+log = Logger.Logger('detect_door.py')
 config = get_config()
 
 class DetectDoor(Node):
@@ -48,8 +48,7 @@ class DetectDoor(Node):
                 cv2.putText(img, "NOT DETECT DOOR", (320,320), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0), 2)
         
         img = annotator.result()
-        # 결과 표시
-        
+
         img = cv2.resize(img, (640, 640))  # display 크기 통일
 
         return img, door_result

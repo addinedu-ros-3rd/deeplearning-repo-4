@@ -5,7 +5,7 @@ from .ConfigUtil import get_config
 
 config = get_config()
 
-log = Logger.Logger('haejo_DB.log')
+log = Logger.Logger('DB.py')
 
 class DB():
     

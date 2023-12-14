@@ -5,7 +5,7 @@ from haejo_pkg.utils.ConfigUtil import get_config
 from haejo_pkg.utils import Logger
 
 
-log = Logger.Logger('modules_detect_snack.log')
+log = Logger.Logger('detect_snack.py')
 config = get_config()
 
 
