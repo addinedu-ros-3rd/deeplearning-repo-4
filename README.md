@@ -17,7 +17,9 @@
   - 밝기: 밝음 / 어두움
  
 - 프로젝트 기간: 2023.11.17 ~ 12.15
+<br><br>
 
+## 2. 시스템 설계
 ### 기술 스택
 |   |   |
 |---|---|
@@ -25,10 +27,8 @@
 |기술|![Python](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=PyTorch&logoColor=white) ![Tensorflow](https://img.shields.io/badge/Tensorflow-FF6F00?style=for-the-badge&logo=Tensorflow&logoColor=white) ![ROS2](https://img.shields.io/badge/ROS2-22314E?style=for-the-badge&logo=ROS&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white) ![Mysql](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)|
 |커뮤니케이션|![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white) ![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=Confluence&logoColor=white) ![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)|
 
-### 주요 기능
-![Screenshot from 2023-12-14 20-16-41](https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/bcdc6e39-b7c3-45e0-b3db-93ad594d28a4)
+<br><br>
 
-## 2. 개발 문서
 ### 시스템 구성도
 <p align="center">
   <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/afc45aae-57bc-4871-a21b-c6758ac1c98d" width="90%" style="float:left">
@@ -36,7 +36,14 @@
 
 <br><br>
 
-### 실시간 시나리오
+### Deep Learning Controller 상세
+<p align="center">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/2382a9f3-b68b-4292-88b1-71dfbfe9dfa8" width="90%" style="float:left">
+</p>
+
+<br><br>
+
+### 실시간 객체 인식 시나리오
 <p align="center">
   <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/1638e49e-4856-4cb7-81df-ae5777c056c4" width="90%" style="float:left">
 </p>
@@ -55,6 +62,7 @@
   <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/146153568/cdcd0e05-f24b-4878-8a63-9a0eee9687b2" width="70%" style="float:left">
 </p>
 
+<br><br>
 ## 3. 실행 방법
 ### 3-1. 딥러닝 모델: 도커 환경
 - deploy 디렉토리에서
@@ -138,6 +146,7 @@
      ```
      ros2 run haejo_pkg deep_learning
      ```
+<br>
 
 ## 4. 팀원 소개 및 역할
 |구분|이름|역할|
@@ -146,6 +155,8 @@
 |팀원|강병철|CNN/VGG16 전이학습, YOLOv5 활용|
 |팀원|오윤|시스템 구성도 및 시나리오 작성, YOLOv5 활용, DB 설계, AWS S3 연동, Query/SP 작성, Dockerfile/compose.yaml 작성|
 |팀원|이수민|LSTM/YOLOv8 활용, ROS2, mediapipe, PyQt|
+
+<br>
 
 ## 5. 회고
 - 기술적으로 만족한 점
