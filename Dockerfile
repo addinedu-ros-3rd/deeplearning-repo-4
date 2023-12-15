@@ -19,9 +19,7 @@ RUN apt update --no-install-recommends \
     && apt update && sudo apt install curl -y \
     && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
-    && apt update && yes | apt install ros-humble-desktop python3-colcon-common-extensions \
-    ros-humble-image-transport-plugins ros-humble-compressed-image-transport ros-humble-theora-image-transport ros-humble-compressed-depth-image-transport \
-    && strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+    && apt update && yes | apt install ros-humble-desktop python3-colcon-common-extensions
 
 # reset environment default
 ENV DEBIAN_FRONTEND newt
@@ -35,7 +33,8 @@ RUN groupadd ${USER_NAME} --gid ${GROUP_ID}\
     && useradd -l -m ${USER_NAME} -u ${USER_ID} -g ${GROUP_ID} -s /bin/bash\
     && passwd -d ${USER_NAME} \
     && usermod -aG sudo $USER_NAME \
-    && usermod -aG video $USER_NAME
+    && usermod -aG video $USER_NAME \
+    && echo "${USER_NAME} ALL=NOPASSWD: ALL"
 
 # change user
 USER $USER_NAME

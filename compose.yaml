@@ -18,11 +18,11 @@ services:
       - ROS_DOMAIN_ID=$ROS_DOMAIN_ID
 
     # getting all gpus
-    privileged: true
+    # privileged: true
     # communication between containers and host
-    network_mode: host
-    pid: host
-    ipc: host
+    # network_mode: host
+    # pid: host
+    # ipc: host
     
     # avoid exit
     tty: true
