@@ -88,44 +88,44 @@
 2. 실행에 앞서, ros2 humble과 qt5, requirements의 pip 라이브러리가 설치되어 있어야 합니다.
   - ros2 humble 설치: https://docs.ros.org/en/humble/Installation/Alternatives/Ubuntu-Development-Setup.html
   - qt5 설치 (ubuntu 22.04 기준)
-  ```
-  sudo apt-get update
-  sudo apt-get upgrade
-  sudo apt-get install build-essential make qt5-default qtcreator qtdeclarative5-dev libqt5serialport5-dev 
-  ```
+    ```
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt-get install build-essential make qt5-default qtcreator qtdeclarative5-dev libqt5serialport5-dev 
+    ```
   - python 라이브러리 설치
-  ```
-  pip install -r requirements.txt
-  ```
+    ```
+    pip install -r requirements.txt
+    ```
 3. 프로젝트의 ConfigUtil.py 파일에서 config.ini 파일이 있는 경로 수정이 필요합니다.
-  ```
-  configParser.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
-  config = configParser['yun']
-  ```
+    ```
+    configParser.read('/home/yoh/deeplearning-repo-4/ros_dl/src/haejo_pkg/haejo_pkg/utils/config.ini')
+    config = configParser['yun']
+    ```
 4. create_and_init.sql 파일로 DB의 테이블과 SP를 생성하고 모듈 테이블의 데이터를 추가합니다.
    ```
    source create_and_init.sql
    ```
 5. config.ini는 다음 형태로 작성 필요합니다.
-  ```
-  [dev]
-  host = DB Host
-  port = DB port
-  user = DB user
-  password = DB password
-  database = DB database name
-
-  GUI = /workspace/ros_dl/src/haejo_pkg/haejo_pkg/haejo.ui
-  phone_yolo_model = /workspace/ros_dl/src/haejo_pkg/model/yolov5su.pt
-  phone_lstm_model = /workspace/ros_dl/src/haejo_pkg/model/yolo_state_dict.pt
-
-  desk_model = /workspace/ros_dl/src/haejo_pkg/model/desk_best.pt
-  door_model = /workspace/ros_dl/src/haejo_pkg/model/door_best.pt
-  light_model = /workspace/ros_dl/src/haejo_pkg/model/light_on_off_model.keras
-  snack_model = /workspace/ros_dl/src/haejo_pkg/model/snack_best.pt
-
-  video_dir = /workspace/record/
-  ```
+    ```
+    [dev]
+    host = DB Host
+    port = DB port
+    user = DB user
+    password = DB password
+    database = DB database name
+  
+    GUI = /workspace/ros_dl/src/haejo_pkg/haejo_pkg/haejo.ui
+    phone_yolo_model = /workspace/ros_dl/src/haejo_pkg/model/yolov5su.pt
+    phone_lstm_model = /workspace/ros_dl/src/haejo_pkg/model/yolo_state_dict.pt
+  
+    desk_model = /workspace/ros_dl/src/haejo_pkg/model/desk_best.pt
+    door_model = /workspace/ros_dl/src/haejo_pkg/model/door_best.pt
+    light_model = /workspace/ros_dl/src/haejo_pkg/model/light_on_off_model.keras
+    snack_model = /workspace/ros_dl/src/haejo_pkg/model/snack_best.pt
+  
+    video_dir = /workspace/record/
+    ```
   - keras를 제외한 모든 모델은 현재 git 프로젝트에서 ros_dl/src/haejo_pkg/model 경로 하위에 포함되어 있습니다.
   - keras 모델은 구글 드라이브에서 받아주세요: https://drive.google.com/file/d/18llPFcgIQBvfEDXJx_6Zr1BPR_P9KzbJ/view?usp=sharing
 6. ros2 실행
