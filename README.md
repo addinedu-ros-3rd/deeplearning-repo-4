@@ -42,14 +42,14 @@
 
 ### 2-3. 객체 인식 데이터 구조
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/146153568/cdcd0e05-f24b-4878-8a63-9a0eee9687b2" width="50%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/146153568/cdcd0e05-f24b-4878-8a63-9a0eee9687b2" width="75%" style="float:left">
 </p>
 
 <br><br>
 
 ### 2-4. GUI
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/5e8d9ead-72a9-4fa4-81ac-006f6ed5c6c6" width="90%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/5e8d9ead-72a9-4fa4-81ac-006f6ed5c6c6" width="98%" style="float:left">
 </p>
 
 <br><br>
