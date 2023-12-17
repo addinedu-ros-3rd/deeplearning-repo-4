@@ -1,6 +1,6 @@
 # 🌞 딥러닝 학습도우미
 ## 1. 프로젝트 소개
-### 학습 방해 요소를 확인하는 딥러닝 모델 개발
+### 딥러닝 기반으로 학습 방해 요소를 확인하는 프로그램
 <p align=center width="100%">
   <img src="/image/door.gif" height="300" width="22%" style="float:left">
   <img src="/image/snack.gif" height="300" width="22%" style="float:left">
