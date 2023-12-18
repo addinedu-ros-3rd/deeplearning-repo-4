@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | cat > /etc/apt/apt.conf.d/10no--check-valid-until
 
-ADD . /workspace/project/
+ADD . /workspace
 
 RUN apt update --no-install-recommends \
     && apt upgrade --no-install-recommends -y \
