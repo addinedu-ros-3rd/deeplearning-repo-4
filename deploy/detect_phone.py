@@ -86,7 +86,7 @@ class DetectPhone():
 
         length = 20
         dataset = []
-        status = 'None'
+        status = 'work'
         
         while True:
             ret, img = self.camera.read()
@@ -111,13 +111,47 @@ class DetectPhone():
                             x, y = int(x_and_y.x * 640), int(x_and_y.y * 640)
                             draw_line_dic[idx] = [x, y]
                         idx += 1
-                    xy_list_list.append(xy_list)
+                    
 
                     for line in draw_line:
                         x1, y1 = draw_line_dic[line[0]][0], draw_line_dic[line[0]][1]
                         x2, y2 = draw_line_dic[line[1]][0], draw_line_dic[line[1]][1]
                         img = cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
                     
+                    phone_results = self.yolo(img, stream=True)
+
+                    for r in phone_results:
+                        
+                        annotator = Annotator(img)
+
+                        boxes = r.boxes
+                        
+                        for idx, box in enumerate(boxes):
+                            b = box.xyxy[0]
+                            c = box.cls
+                        
+                            if int(c) == 67:
+                                
+                                color = self.colors[int(c)]
+                                annotator.box_label(b, self.yolo.names[int(c)], color)
+
+                                b_list = b.tolist()
+                                
+                                for idx in range(4):
+                                    xy_list.append(b_list[idx]/640.0)
+                                break
+                                
+                            else:
+                                if (len(boxes) - 1 == idx):
+                                    for _ in range(4):
+                                        xy_list.append(0.0)
+                                else:
+                                    continue
+                    print(len(xy_list))
+                    xy_list_list.append(xy_list)                
+                    img = annotator.result()
+
+
                     if len(xy_list_list) == length:
                         
                         dataset = []
@@ -130,6 +164,7 @@ class DetectPhone():
                             data = data.to("cuda")
                             
                             with torch.no_grad():
+                                self.model = self.model.to("cuda")
                                 result = self.model(data)
                                 _, out = torch.max(result, 1)
                                 
