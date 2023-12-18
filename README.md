@@ -75,15 +75,41 @@
 
 <br><br>
 
-## 3. 실행 방법
-### 3-1. 딥러닝 모델: 도커 환경
+## 3. 시연 영상 & 발표 자료
+<p align=center>
+  <a href="https://youtu.be/U-IMCFTzLZ8?feature=shared">
+    <img src="https://i.ytimg.com/vi/U-IMCFTzLZ8/maxresdefault.jpg" width="80%">
+  </a>
+  <br>
+  <a href="https://youtu.be/U-IMCFTzLZ8?feature=shared">데모 영상 보러 가기</a>
+</p>
+
+- 발표 자료: https://docs.google.com/presentation/d/14j98Dq29OkgNTr-gZHDb-1Xuq7medQQyVQvuFJYs_OU/edit?usp=sharing
+
+<br><br>
+
+## 4. 실행 방법
+### 4-1. 딥러닝 모델: 도커 환경
 - deploy 디렉토리에서
   ```
   docker compose up -d
   ```
   로 이미지 빌드 후 실행 시, 사용하는 PC의 웹캠과 디스플레이에 연동하여 모델 성능 확인이 가능합니다.
+- 도커 접속 후
+  - DESK/SNACK/DOOR yolo v5 모델 인식 확인
+  ```
+  python detect.py --weights 'pt파일 경로' --source 0
+  ```
+  - LIGHT keras 모델 인식 확인
+  ```
+  python detect_light.py
+  ```
+  - PHONE LSTM 모델 인식 확인
+  ```
+  python detect_phone.py
+  ```
 
-### 3-2. UI/DB/S3/ROS2 연동 프로그램 실행: 로컬 PC
+### 4-2. UI/DB/S3/ROS2 연동 프로그램 실행: 로컬 PC
 0. 촬영한 영상 저장과 조회를 위해서는 AWS S3 bucket과 IAM 생성이 필요합니다. 이 설정이 없을 경우 실시간 인식만 가능합니다.
 1. ros_cam 프로젝트(https://github.com/ros-drivers/usb_cam) 와 직접 작성한 ros_dl 프로젝트를 동시에 실행해야 합니다.
   - ros_cam을 실행한 PC와 USB로 연결된 카메라의 /image_raw 토픽을 받아올 수 있는(같은 ROS_DOMAIN_ID를 가진) PC에서 ros_dl 프로젝트를 실행합니다.
@@ -160,7 +186,7 @@
      ```
 <br>
 
-## 4. 팀원 소개 및 역할
+## 5. 팀원 소개 및 역할
 |구분|이름|역할|
 |---|---|---|
 |팀장|이충한|PM, PyQt GUI 개발, 데이터 라벨링|
@@ -170,7 +196,7 @@
 
 <br>
 
-## 5. 회고
+## 6. 회고
 - 기술적으로 만족한 점
   - 도커로 개발 환경 구축
   - ROS2 통신 연동
@@ -179,8 +205,3 @@
   - 다양한 딥러닝 모델로 학습하지 못했고, 모델 경량화가 부족하여 실시간 인식 시 PC 자원에 따라 화면 버퍼링 발생
   - 도커 운영 환경을 구축하고자 했으나, UI 코드를 분리하지 못해 Qt 로컬 환경 의존성 이슈 발생
   - 움직이는 로봇에 연동된 카메라를 상정하여 ESP-32 cam 사용 및 Wifi/TCP/UDP 통신을 고려했으나, 구현하지 못하고 USB CAM과 ROS 통신만 사용
-
-<br>
-
-## 6. 발표자료
-- https://docs.google.com/presentation/d/14j98Dq29OkgNTr-gZHDb-1Xuq7medQQyVQvuFJYs_OU/edit?usp=sharing
