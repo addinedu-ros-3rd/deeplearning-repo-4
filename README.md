@@ -63,14 +63,14 @@
 
 ### 2-6. 실시간 객체 인식 시나리오
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/1638e49e-4856-4cb7-81df-ae5777c056c4" width="90%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/2128e03d-fc98-4111-bb42-80da3e97baa8" width="90%" style="float:left">
 </p>
 
 <br><br>
 
 ### 2-7. 저장된 영상 확인 시나리오
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/4331709c-9ba8-4cc9-895f-cdb1d0a18c7b" width="90%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/3f81fb8e-bcd9-492b-9760-d7949eaaf396" width="90%" style="float:left">
 </p>
 
 <br><br>
