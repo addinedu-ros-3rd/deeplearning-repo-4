@@ -63,7 +63,7 @@
 
 ### 2-6. 실시간 객체 인식 시나리오
 <p align="center">
-  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/2128e03d-fc98-4111-bb42-80da3e97baa8" width="90%" style="float:left">
+  <img src="https://github.com/addinedu-ros-3rd/deeplearning-repo-4/assets/86283716/2341f42a-78de-4337-a5fa-7606fa6520dc" width="90%" style="float:left">
 </p>
 
 <br><br>
